@@ -1,0 +1,24 @@
+{
+  "name": "finderjs",
+  "version": "0.0.1",
+  "description": "Finder-like ui for viewing hierarchical content in columns",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape 'tests/**/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mynameistechno/finderjs.git"
+  },
+  "keywords": [
+    "finder",
+    "hierarchichal",
+    "ui"
+  ],
+  "author": "Mark Matyas <mynameistechno@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mynameistechno/finderjs/issues"
+  },
+  "homepage": "https://github.com/mynameistechno/finderjs#readme"
+}
