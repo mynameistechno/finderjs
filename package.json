@@ -4,7 +4,7 @@
   "description": "Finder-like ui for viewing hierarchical content in columns",
   "main": "index.js",
   "scripts": {
-    "test": "tape 'tests/**/*.js'"
+    "test": "NODE_ENV=test tape 'tests/**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   "devDependencies": {
     "browserify": "^11.2.0",
     "eslint": "^1.6.0",
+    "glob": "^5.0.15",
     "istanbul": "^0.3.21",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.1"
