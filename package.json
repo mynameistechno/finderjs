@@ -20,5 +20,12 @@
   "bugs": {
     "url": "https://github.com/mynameistechno/finderjs/issues"
   },
-  "homepage": "https://github.com/mynameistechno/finderjs#readme"
+  "homepage": "https://github.com/mynameistechno/finderjs#readme",
+  "devDependencies": {
+    "browserify": "^11.2.0",
+    "eslint": "^1.6.0",
+    "istanbul": "^0.3.21",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.1"
+  }
 }
