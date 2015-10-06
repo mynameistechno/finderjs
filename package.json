@@ -2,9 +2,9 @@
   "name": "finderjs",
   "version": "0.0.1",
   "description": "Finder-like ui for viewing hierarchical content in columns",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "NODE_ENV=test tape 'tests/**/*.js'"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,10 @@
     "glob": "^5.0.15",
     "istanbul": "^0.3.21",
     "tap-spec": "^4.1.0",
-    "tape": "^4.2.1"
+    "tape": "^4.2.1",
+    "watchify": "^3.4.0"
+  },
+  "dependencies": {
+    "global": "^4.3.0"
   }
 }
