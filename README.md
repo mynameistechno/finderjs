@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mynameistechno/finderjs.svg?branch=master)](https://travis-ci.org/mynameistechno/finderjs)
+
 # finderjs
 
 Finder-like ui component for viewing hierarchical content in columns.
