@@ -28,7 +28,6 @@ make install
 
 Command      | Description
 -------------|-------------------------------------
-`make serve` | Run local server in development mode
 `make clean` | Remove build and coverage data
 `make lint`  | Lint files
 `make test`  | Run tests
