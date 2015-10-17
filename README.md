@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/mynameistechno/finderjs.svg?branch=master)](https://travis-ci.org/mynameistechno/finderjs)
-
 [![Code Climate](https://codeclimate.com/github/mynameistechno/finderjs/badges/gpa.svg)](https://codeclimate.com/github/mynameistechno/finderjs)
-
 [![Test Coverage](https://codeclimate.com/github/mynameistechno/finderjs/badges/coverage.svg)](https://codeclimate.com/github/mynameistechno/finderjs/coverage)
 
 # finderjs
