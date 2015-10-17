@@ -9,10 +9,8 @@ var extend = require('xtend');
 var document = require('global/document');
 var Delegator = require('dom-delegator');
 var EventEmitter = require('events').EventEmitter;
-var closest = require('./util').closest;
-var addClass = require('./util').addClass;
-var removeClass = require('./util').removeClass;
-var hasClass = require('./util').hasClass;
+
+var _ = require('./util');
 
 module.exports = finder;
 
@@ -86,6 +84,7 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
 };
 
 /**
+ * Click event handler for whole container
  * @param  {object} config
  * @param  {object} event emitter
  * @param  {object} event
@@ -95,17 +94,18 @@ finder.clickEvent = function clickEvent(cfg, emitter, event) {
   var activeEls;
   var col;
 
-  if (hasClass(el, cfg.className.item)) {
-    col = closest(el, function test(el) {
-      return hasClass(el, cfg.className.col);
+  // list item clicked
+  if (_.hasClass(el, cfg.className.item)) {
+    col = _.closest(el, function test(el) {
+      return _.hasClass(el, cfg.className.col);
     });
 
     activeEls = col.getElementsByClassName(cfg.className.active);
     if (activeEls.length) {
-      removeClass(activeEls[0], cfg.className.active);
+      _.removeClass(activeEls[0], cfg.className.active);
     }
 
-    addClass(el, cfg.className.active);
+    _.addClass(el, cfg.className.active);
 
     emitter.emit('itemClicked', {
       col: col,
@@ -123,7 +123,7 @@ finder.createColumn = function createColumn(data, cfg) {
   var div = document.createElement('div');
   var list = finder.createList(data, cfg);
 
-  addClass(div, cfg.className.col);
+  _.addClass(div, cfg.className.col);
   div.appendChild(list);
 
   return div;
@@ -145,7 +145,7 @@ finder.createList = function createList(data, cfg) {
   }, document.createDocumentFragment());
 
   ul.appendChild(docFrag);
-  addClass(ul, cfg.className.list);
+  _.addClass(ul, cfg.className.list);
 
   return ul;
 };
@@ -159,7 +159,7 @@ finder.createItem = function createItem(cfg, item) {
   var li = document.createElement('li');
   var text = document.createTextNode(item.label);
 
-  addClass(li, cfg.className.item);
+  _.addClass(li, cfg.className.item);
   li.item = item;
   li.appendChild(text);
 
