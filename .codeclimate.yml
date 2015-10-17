@@ -1,0 +1,13 @@
+---
+engines:
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+  - "**.jsx"
+  - "**.css"
+exclude_paths:
+  - "bundle.js"
