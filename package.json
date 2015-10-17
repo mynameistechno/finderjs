@@ -23,6 +23,7 @@
   "homepage": "https://github.com/mynameistechno/finderjs#readme",
   "devDependencies": {
     "browserify": "^11.2.0",
+    "codeclimate-test-reporter": "^0.1.1",
     "eslint": "^1.6.0",
     "glob": "^5.0.15",
     "istanbul": "^0.3.21",
