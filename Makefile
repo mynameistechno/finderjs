@@ -16,3 +16,6 @@ cover:
 
 lint:
 	$(npmBin)/eslint src tests
+
+watch:
+	$(npmBin)/watchify $(in) -d -v -o $(out)

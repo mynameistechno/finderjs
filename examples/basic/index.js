@@ -3,26 +3,46 @@
 var finder = require('../../src/finder');
 
 var data = [{
-  label: 'A: Choice 1',
+  label: 'A',
   value: 'a-1',
   data: [{
-    label: 'AA: Choice 1',
+    label: 'A1',
     value: 'aa-1',
     url: 'http://www.qualcomm.com'
   }, {
-    label: 'AA: Choice 2',
+    label: 'A2',
     value: 'aa-2',
-    url: 'https://www.codeaurora.org/'
+    data: [{
+      label: 'A2A',
+      value: 'ba-1',
+      data: [{
+        label: 'A2A1',
+        value: 'ba-1',
+        data: [{
+          label: 'A2A1A',
+          value: 'ba-1',
+          url: 'http://a.com'
+        }]
+      }]
+    }, {
+      label: 'A2B',
+      value: 'ba-2',
+      data: [{
+        label: 'A2B1',
+        value: 'ba-2',
+        url: 'http://test.com'
+      }]
+    }]
   }]
 }, {
-  label: 'B: Choice 1',
+  label: 'B',
   value: 'b-1',
   data: [{
-    label: 'BA: Choice 1',
+    label: 'B1',
     value: 'ba-1',
     url: 'http://www.qualcomm.com'
   }, {
-    label: 'BA: Choice 2',
+    label: 'B2',
     value: 'ba-2',
     success: function success() {
       console.log('CLICK: ' + this.value);
