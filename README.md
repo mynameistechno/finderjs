@@ -28,6 +28,7 @@ make install
 
 Command      | Description
 -------------|-------------------------------------
+`make build` | Build finderjs and example
 `make clean` | Remove build and coverage data
 `make lint`  | Lint files
 `make test`  | Run tests

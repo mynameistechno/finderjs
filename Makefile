@@ -8,6 +8,8 @@ install:
 
 clean:
 	rm -rf coverage/
+	rm example/bundle.js
+	rm -rf build/
 
 test:
 	$(npmBin)/tape test/**/*.js | $(npmBin)/tap-spec
@@ -20,3 +22,8 @@ lint:
 
 watch:
 	$(npmBin)/watchify $(in) -d -v -o $(out)
+
+build:
+	$(npmBin)/browserify example/index.js -o example/bundle.js
+	mkdir build
+	$(npmBin)/browserify index.js -o build/finder.js
