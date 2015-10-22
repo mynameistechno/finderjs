@@ -1,6 +1,6 @@
 'use strict';
 
-var finder = require('../../src/finder');
+var finder = require('../../index');
 
 var children = [{
   label: 'A',

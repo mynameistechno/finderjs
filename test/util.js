@@ -3,7 +3,7 @@
 var test = require('tape');
 var document = require('global/document');
 
-var util = require('../src/util');
+var util = require('../util');
 
 
 test('[util] hasClass', function test(t) {

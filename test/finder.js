@@ -4,7 +4,7 @@ var test = require('tape');
 var document = require('global/document');
 var EventEmitter = require('events').EventEmitter;
 
-var finder = require('../src/finder');
+var finder = require('../index');
 
 
 test('[finder] finder', function test(t) {
