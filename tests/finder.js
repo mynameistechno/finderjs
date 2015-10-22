@@ -8,7 +8,7 @@ var finder = require('../src/finder');
 
 
 test('[finder] finder', function test(t) {
-  var data = [{
+  var children = [{
     label: 'A: Choice 1',
     value: 'a-1'
   }, {
@@ -17,18 +17,20 @@ test('[finder] finder', function test(t) {
   }];
   var container = document.createElement('div');
 
-  t.ok(finder(container, data), 'doesn\'t throw an exception');
+  t.ok(finder(container, children), 'doesn\'t throw an exception');
   t.ok(container.childNodes.length, 'should have children');
   t.throws(
-    finder.bind(null, container, []), 'throws an exception - empty data array');
+    finder.bind(null, container, []),
+    'throws an exception - empty children array');
   t.throws(
-    finder.bind(null, container, 123), 'throws an exception - non-array data');
+    finder.bind(null, container, 123),
+    'throws an exception - non-array children');
 
   t.end();
 });
 
 test('[finder] createColumn', function test(t) {
-  var data = [{
+  var children = [{
     label: 'A: Choice 1',
     value: 'a-1'
   }, {
@@ -37,10 +39,12 @@ test('[finder] createColumn', function test(t) {
   }];
   var cfg = {
     className: {
-      col: 'fjs-col'
+      col: 'fjs-col',
+      item: 'fjs-item',
+      list: 'fjs-list'
     }
   };
-  var col = finder.createColumn(data, cfg);
+  var col = finder.createColumn(children, cfg);
 
   t.equal(col.tagName, 'DIV', 'should return a div');
   t.ok(
@@ -51,7 +55,7 @@ test('[finder] createColumn', function test(t) {
 });
 
 test('[finder] createList', function test(t) {
-  var data = [{
+  var children = [{
     label: 'A: Choice 1',
     value: 'a-1'
   }, {
@@ -60,10 +64,11 @@ test('[finder] createList', function test(t) {
   }];
   var cfg = {
     className: {
-      list: 'fjs-list'
+      list: 'fjs-list',
+      item: 'fjs-item'
     }
   };
-  var col = finder.createList(data, cfg);
+  var col = finder.createList(children, cfg);
 
   t.equal(col.tagName, 'UL', 'should return an unordered list');
   t.ok(
@@ -75,16 +80,17 @@ test('[finder] createList', function test(t) {
 });
 
 test('[finder] createItem', function test(t) {
-  var item = {
+  var opts = {
     label: 'A: Choice 1',
     value: 'a-1'
   };
   var cfg = {
     className: {
-      item: 'fjs-item'
+      item: 'fjs-item',
+      children: 'fjs-children'
     }
   };
-  var item = finder.createItem(cfg, item);
+  var item = finder.createItem(cfg, opts);
 
   t.equal(item.tagName, 'LI', 'should return a list item');
   t.ok(
@@ -92,13 +98,21 @@ test('[finder] createItem', function test(t) {
     'should have the right className');
   t.ok(item.childNodes.length, 'should have children');
 
+  opts.children = [{
+    label: 'B',
+    value: 'b'
+  }];
+  item = finder.createItem(cfg, opts);
+
   t.end();
 });
 
 test('[finder] itemSelected', function test(t) {
   var cfg = {
     className: {
-      item: 'fjs-item'
+      item: 'fjs-item',
+      list: 'fjs-list',
+      col: 'fjs-col'
     }
   };
   var emitter = new EventEmitter();
@@ -111,7 +125,7 @@ test('[finder] itemSelected', function test(t) {
     item: {
       label: 'B: Choice 1',
       value: 'b-1',
-      data: [{
+      children: [{
         label: 'A: Choice 1',
         value: 'a-1'
       }, {
@@ -126,8 +140,8 @@ test('[finder] itemSelected', function test(t) {
   emitter.on('columnCreated', t.ok.bind(null, true, 'Column is created'));
   finder.itemSelected(cfg, emitter, value);
 
-  // item.data not provided
-  delete value.item.data;
+  // item.children not provided
+  delete value.item.children;
   finder.itemSelected(cfg, emitter, value);
 
   t.end();

@@ -2,36 +2,36 @@
 
 var finder = require('../../src/finder');
 
-var data = [{
+var children = [{
   label: 'A',
   value: 'a-1',
-  data: [{
+  children: [{
     label: 'A1',
     value: 'aa-1',
     url: 'http://www.qualcomm.com'
   }, {
     label: 'A2',
     value: 'aa-2',
-    data: [{
+    children: [{
       label: 'A2A',
       value: 'ba-1',
-      data: [{
+      children: [{
         label: 'A2A1',
         value: 'ba-1',
-        data: [{
+        children: [{
           label: 'A2A1A',
           value: 'ba-1',
           url: 'http://a.com'
         }, {
-          label: 'A2A1A',
+          label: 'A2A1B',
           value: 'ba-1',
           url: 'http://a.com'
         }, {
-          label: 'A2A1A',
+          label: 'A2A1C',
           value: 'ba-1',
           url: 'http://a.com'
         }, {
-          label: 'A2A1A',
+          label: 'A2A1D',
           value: 'ba-1',
           url: 'http://a.com'
         }]
@@ -39,7 +39,7 @@ var data = [{
     }, {
       label: 'A2B',
       value: 'ba-2',
-      data: [{
+      children: [{
         label: 'A2B1',
         value: 'ba-2',
         url: 'http://test.com'
@@ -49,7 +49,7 @@ var data = [{
 }, {
   label: 'B',
   value: 'b-1',
-  data: [{
+  children: [{
     label: 'B1',
     value: 'ba-1',
     url: 'http://www.qualcomm.com'
@@ -67,4 +67,4 @@ var container = document.getElementById('container');
 
 var options = {};
 
-finder(container, data, options);
+finder(container, children, options);
