@@ -77,7 +77,7 @@ finder.addColumn = function addColumn(container, column) {
  * @param  {object} event value
  */
 finder.itemSelected = function itemSelected(cfg, emitter, value) {
-  var item = value.item;
+  var item = value._item;
   var currCol = value.col;
   var data = item.children || cfg.data;
 
@@ -120,7 +120,7 @@ finder.clickEvent = function clickEvent(cfg, emitter, event) {
 
     emitter.emit('itemClicked', {
       col: col,
-      item: item.item
+      item: item._item
     });
   }
 };
@@ -227,7 +227,7 @@ finder.createItem = function createItem(cfg, item) {
   }
   _.addClass(li, liClassNames);
   li.appendChild(a);
-  li.item = item;
+  li._item = item;
 
   return li;
 };

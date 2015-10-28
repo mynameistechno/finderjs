@@ -137,7 +137,7 @@ test('[finder] itemSelected', function test(t) {
     }
   };
   var value = {
-    item: {
+    _item: {
       label: 'B: Choice 1',
       value: 'b-1',
       url: 'test.com',
@@ -157,11 +157,11 @@ test('[finder] itemSelected', function test(t) {
   finder.itemSelected(cfg, emitter, value);
 
   // item.children not provided, uses item.url
-  delete value.item.children;
+  delete value._item.children;
   finder.itemSelected(cfg, emitter, value);
 
   // no action provided
-  delete value.item.url;
+  delete value._item.url;
   finder.itemSelected(cfg, emitter, value);
 
   t.end();
