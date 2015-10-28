@@ -12,7 +12,8 @@
   "keywords": [
     "finder",
     "hierarchichal",
-    "ui"
+    "ui",
+    "columns"
   ],
   "author": "Mark Matyas <mynameistechno@gmail.com>",
   "license": "MIT",
@@ -28,11 +29,13 @@
     "istanbul": "^0.3.21",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.1",
-    "watchify": "^3.4.0"
+    "uglifyify": "^3.0.1",
+    "watchify": "^3.4.0",
+    "xhr": "^2.1.0"
   },
   "dependencies": {
     "dom-delegator": "^13.1.0",
-    "events": "^1.1.0",
+    "eventemitter3": "^1.1.1",
     "global": "^4.3.0",
     "x-is-array": "^0.1.0",
     "xtend": "^4.0.0"

@@ -12,11 +12,15 @@
   border-bottom: solid 1px lightgray;
 }
 
-.fjs-item {
+.fjs-item a {
+  display: flex;
   padding: 5px;
+  text-decoration: none;
+  color: black;
+  align-items: center;
 }
 
-.fjs-item.fjs-active {
+.fjs-item.fjs-active a {
   background-color: lightgray;
   color: white;
 }
@@ -25,8 +29,8 @@
   border-left: solid 1px lightgray;
 }
 
-.fjs-col:nth-last-child(2) .fjs-item.fjs-active,
-.fjs-col:last-child .fjs-item.fjs-active {
+.fjs-col:nth-last-child(2) .fjs-item.fjs-active a,
+.fjs-col:last-child .fjs-item.fjs-active a {
   background-color: dodgerblue;
 }
 
@@ -35,4 +39,12 @@
   margin: 0;
   padding: 0;
 }
+
+.fjs-item-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
 

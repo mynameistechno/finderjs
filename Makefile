@@ -23,7 +23,7 @@ lint:
 watch:
 	$(npmBin)/watchify $(in) -d -v -o $(out)
 
-build:
-	$(npmBin)/browserify example/index.js -o example/bundle.js
+build: clean
+	$(npmBin)/browserify --no-builtins example/index.js -o example/bundle.js
 	mkdir build
-	$(npmBin)/browserify index.js -o build/finder.js
+	$(npmBin)/browserify --full-paths --no-builtins --s finderjs -g uglifyify index.js -o build/finder.js

@@ -1,5 +1,6 @@
 'use strict';
 
+var xhr = require('xhr');
 var finder = require('../index');
 
 var children = [{
@@ -61,10 +62,22 @@ var children = [{
     }
   }]
 }];
-
-var container = document.getElementById('container');
-
-
+var container1 = document.getElementById('container1');
 var options = {};
+finder(container1, children, options);
 
-finder(container, children, options);
+function remoteSource(parent, config, callback) {
+  xhr({
+    uri: 'http://jsonplaceholder.typicode.com/users'
+  }, function done(err, resp, body) {
+    var data = JSON.parse(body);
+
+    callback(data.map(function each(item) {
+      return {
+        label: item.address.city,
+        id: item.id
+      };
+    }));
+  });
+}
+finder(container2, remoteSource, options);

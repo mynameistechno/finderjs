@@ -2,19 +2,31 @@
  * finder.js module.
  * @module finderjs
  */
-
 'use strict';
 
 var extend = require('xtend');
 var document = require('global/document');
 var Delegator = require('dom-delegator');
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('eventemitter3');
 var isArray = require('x-is-array');
 
 var _ = require('./util');
+var defaults = {
+  className: {
+    container: 'fjs-container',
+    col: 'fjs-col',
+    list: 'fjs-list',
+    item: 'fjs-item',
+    active: 'fjs-active',
+    children: 'fjs-has-children',
+    url: 'fjs-url',
+    itemPrepend: 'fjs-item-prepend',
+    itemContent: 'fjs-item-content',
+    itemAppend: 'fjs-item-append'
+  }
+};
 
 module.exports = finder;
-
 
 /**
  * @param  {element} container
@@ -23,35 +35,30 @@ module.exports = finder;
  * @return {element} container
  */
 function finder(container, data, options) {
-  var cfg = extend({
-    className: {
-      container: 'fjs-container',
-      col: 'fjs-col',
-      list: 'fjs-list',
-      item: 'fjs-item',
-      active: 'fjs-active',
-      children: 'fjs-has-children',
-      itemPrepend: 'fjs-item-prepend',
-      itemContent: 'fjs-item-content',
-      itemAppend: 'fjs-item-append'
-    }
-  }, options);
+  var cfg = extend(defaults, options);
   var delegator = Delegator();
   var emitter = new EventEmitter();
-  var col;
 
-  if (!isArray(data) || !data.length) {
-    throw new Error('No data provided');
+  // xtend doesn't deep merge
+  if (options) {
+    cfg.className = extend(defaults.className, options.className);
   }
 
+  // store the fn so we can call it on subsequent selections
+  if (typeof data === 'function') {
+    cfg.data = data;
+  }
+
+  // dom events
   delegator.addEventListener(
     container, 'click', finder.clickEvent.bind(null, cfg, emitter));
+
+  // internal events
   emitter.on('itemClicked', finder.itemSelected.bind(null, cfg, emitter));
   emitter.on('columnCreated', finder.addColumn.bind(null, container));
 
   _.addClass(container, cfg.className.container);
-  col = finder.createColumn(data, cfg);
-  emitter.emit('columnCreated', col);
+  finder.createColumn(data, cfg, emitter);
 
   return container;
 }
@@ -65,7 +72,6 @@ finder.addColumn = function addColumn(container, column) {
 };
 
 /**
- * @param  {object} data
  * @param  {object} config
  * @param  {object} event emitter
  * @param  {object} event value
@@ -73,20 +79,14 @@ finder.addColumn = function addColumn(container, column) {
 finder.itemSelected = function itemSelected(cfg, emitter, value) {
   var item = value.item;
   var currCol = value.col;
-  var col;
-  var curr;
-  var next;
+  var data = item.children || cfg.data;
 
-  curr = currCol.nextSibling;
-  while (curr) {
-    next = curr.nextSibling;
-    curr.remove();
-    curr = next;
-  }
+  _.nextSiblings(currCol).map(_.remove);
 
-  if (item.children) {
-    col = finder.createColumn(item.children, cfg);
-    emitter.emit('columnCreated', col);
+  if (data) {
+    finder.createColumn(data, cfg, emitter, item);
+  } else if (item.url) {
+    document.location.href = item.url;
   }
 };
 
@@ -106,6 +106,8 @@ finder.clickEvent = function clickEvent(cfg, emitter, event) {
     return _.hasClass(el, cfg.className.item);
   });
 
+  event.preventDefault();
+
   // list item clicked
   if (item) {
     activeEls = col.getElementsByClassName(cfg.className.active);
@@ -124,16 +126,29 @@ finder.clickEvent = function clickEvent(cfg, emitter, event) {
 /**
  * @param  {object} data
  * @param  {object} config
+ * @param  {object} event emitter
+ * @param  {parent} [parent] - parent item that clicked/triggered createColumn
  * @return {element} column
  */
-finder.createColumn = function createColumn(data, cfg) {
-  var div = _.el('div');
-  var list = finder.createList(data, cfg);
+finder.createColumn = function createColumn(data, cfg, emitter, parent) {
+  var div;
+  var list;
+  function callback(data) {
+    finder.createColumn(data, cfg, emitter, parent);
+  };
 
-  _.addClass(div, cfg.className.col);
-  div.appendChild(list);
+  if (typeof data === 'function') {
+    data.call(null, parent, cfg, callback);
+  } else if (isArray(data)) {
+    list = finder.createList(data, cfg);
+    div = _.el('div');
+    div.appendChild(list);
+    _.addClass(div, cfg.className.col);
 
-  return div;
+    emitter.emit('columnCreated', div);
+  } else {
+    throw new Error('Unknown data type');
+  }
 };
 
 /**
@@ -158,32 +173,59 @@ finder.createList = function createList(data, cfg) {
 };
 
 /**
- * @param  {object} config
+ * Default item render fn
+ * @param  {object} cfg config object
+ * @param  {object} item data
+ * @return {DocumentFragment}
+ */
+finder.createItemContent = function createItemContent(cfg, item) {
+  var frag = document.createDocumentFragment();
+  var prepend = _.el('div');
+  var content = _.el('div');
+  var append = _.el('div');
+
+  prepend.className = cfg.className.itemPrepend;
+  frag.appendChild(prepend);
+
+  content.className = cfg.className.itemContent;
+  content.appendChild(document.createTextNode(item.label));
+  frag.appendChild(content);
+
+  append.className = cfg.className.itemAppend;
+  frag.appendChild(append);
+
+  return frag;
+};
+
+/**
+ * @param  {object} cfg config object
  * @param  {object} item data
  * @return {element} list item
  */
 finder.createItem = function createItem(cfg, item) {
+  var frag = document.createDocumentFragment();
+  var liClassNames = [cfg.className.item];
   var li = _.el('li');
-  var docFrag = document.createDocumentFragment();
-  var prepend = _.el('div');
-  var content = _.el('div');
-  var append = _.el('div');
-  var text = document.createTextNode(item.label);
+  var a = _.el('a');
+  var createItemContent = cfg.createItemContent || finder.createItemContent;
 
-  _.addClass(li, [cfg.className.item, item.className || '']);
-  if (item.children) {
-    _.addClass(li, cfg.className.children);
+  frag = createItemContent.call(null, cfg, item);
+  a.appendChild(frag);
+
+  a.href = '#';
+  if (item.url) {
+    a.href = item.url;
+    liClassNames.push(cfg.className.url);
   }
-
-  prepend.className = cfg.className.itemPrepend;
-  docFrag.appendChild(prepend);
-  content.appendChild(text);
-  content.className = cfg.className.itemContent;
-  docFrag.appendChild(content);
-  append.className = cfg.className.itemAppend;
-  docFrag.appendChild(append);
-
-  li.appendChild(docFrag);
+  if (item.className) {
+    liClassNames.push(item.className);
+  }
+  if (item.children) {
+    liClassNames.push(cfg.className.children);
+  }
+  _.addClass(li, liClassNames);
+  li.appendChild(a);
   li.item = item;
+
   return li;
 };
