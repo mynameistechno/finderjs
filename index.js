@@ -87,6 +87,8 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
     finder.createColumn(data, cfg, emitter, item);
   } else if (item.url) {
     document.location.href = item.url;
+  } else {
+    console.log('Warning: no action specified');
   }
 };
 

@@ -6,7 +6,6 @@
 
 var document = require('global/document');
 var isArray = require('x-is-array');
-var Element = Element || {prototype: {}};
 
 /**
  * check if variable is an element
@@ -40,7 +39,7 @@ function el(element) {
  * @return {Element} removed element
  */
 function remove(element) {
-  if ('remove' in Element.prototype) {
+  if ('remove' in element) {
     element.remove();
   } else {
     element.parentNode.removeChild(element);

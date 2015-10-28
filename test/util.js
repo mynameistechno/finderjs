@@ -170,3 +170,42 @@ test('[util] previousSiblings', function test(t) {
 
   t.end();
 });
+
+test('[util] el', function test(t) {
+  var element = document.createElement('div');
+
+  t.equal(_.el('div').tagName, 'DIV', 'should return DIV element');
+  t.equal(_.el(element), element, 'should return element');
+
+  t.end();
+});
+
+test('[util] remove', function test(t) {
+  var parent = document.createElement('div');
+  var element = document.createElement('div');
+  parent.appendChild(element);
+
+  t.plan(3);
+  t.ok(parent.childNodes.length, 'should have children');
+  _.remove(element);
+  t.notOk(parent.childNodes.length, 'should not have children');
+
+  // native Element.remove()
+  element = {
+    remove: t.ok.bind(null, true, 'native remove should have been called')
+  };
+  _.remove(element);
+
+  t.end();
+});
+
+test('[util] stop', function test(t) {
+  var event = {
+    stopPropagation: t.ok.bind(null, true, 'stopPropagation should be called'),
+    preventDefault: t.ok.bind(null, true, 'preventDefault should be called')
+  };
+
+  t.plan(2);
+  _.stop(event);
+  t.end();
+});
