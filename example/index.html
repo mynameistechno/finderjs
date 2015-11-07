@@ -1,23 +1,70 @@
 <!doctype html>
 <html>
 <head>
-  <title>Finder.js example</title>
+  <title>Finder.js</title>
+  <link href="site.css" media="all" rel="stylesheet">
   <link href="finderjs.css" media="all" rel="stylesheet">
-  <style>
-  body {
-    font-family: "Lucida Grande", Arial, Verdana, sans-serif;
-    font-size: 14px;
-  }
-  </style>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" lazyload>
 </head>
-<body>
-  <h1>Static list</h1>
-  <div id="container1"></div>
+<body class="site">
 
-  <h1>Dynamic list - remote web service</h1>
-  <div id="container2"></div>
+  <header class="header">
+    <h1><span class="fa fa-columns"></span> finder<span>js</span></h1>
+    <h2 class="sub-title">Finder-like UI for viewing hierarchical content in columns</h2>
+
+    <div class="actions">
+      <a class="btn btn-hi" href="https://github.com/mynameistechno/finderjs">
+        <span class="fa fa-github"></span> View Source
+      </a>
+      <a class="btn" href="https://github.com/mynameistechno/finderjs/archive/master.zip">
+        <span class="fa fa-download"></span> Download Zip
+      </a>
+    </div>
+  </header>
+
+  <main class="site-content">
+    <section>
+      <h2>Introduction</h2>
+      <p><strong>Finder</strong>JS allows you to browse hierarchical data in columns, similar to OS X's <a href="https://en.wikipedia.org/wiki/Finder_(software)">Finder<span class="fa fa-external-link"></span></a>.</p>
+      <h3>Features</h3>
+      <ul>
+        <li><strong>Data source:</strong> Array or Function (useful for dynamic/asynchronous content such as a remote web service).</li>
+        <li><strong>Rendering:</strong> define how items are rendered.</li>
+        <li><strong>Stlying:</strong> Use any CSS/framework of choice, or feel free to use the example CSS (which leverages <a href="http://www.w3.org/TR/css-flexbox-1/">Flexbox<span class="fa fa-external-link"></span></a>). Additionally, classnames are customizable.</li>
+        <li><strong>Keyboard navigation:</strong> use arrows keys to navigate.</li>
+        <li><strong>Events:</strong> several events are emitted to allow for custom behavior. </li>
+        <li><strong>Module formats:</strong> Provided as an npm module (CommonJS),exported as the global <em>finderjs</em>, and as a jquery plugin.</li>
+        <li><strong>File size:</strong> 4KB minified and gzipped.</li>
+        <li><strong>Test coverage:</strong> <a href="https://codeclimate.com/github/mynameistechno/finderjs/coverage">100%<span class="fa fa-external-link"></span></a>.</li>
+      </ul>
+    </section>
+
+    <section class="example">
+      <h2>Example #1</h2>
+      <p>Data source is an array that contains all necessary columns.</p>
+      <div id="container1"></div>
+    </section>
+
+    <section class="example">
+      <h2>Example #2</h2>
+      <p>Data source is a function that pulls in sample data from <a href="http://jsonplaceholder.typicode.com/">JSONPlaceholder<span class="fa fa-external-link"></span></a>.</p>
+      <div id="container2"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="links">
+      <iframe src="https://ghbtns.com/github-btn.html?user=mynameistechno&repo=finderjs&type=star&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+      <iframe src="https://ghbtns.com/github-btn.html?user=mynameistechno&repo=finderjs&type=fork&count=true" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
+      <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://github.com/mynameistechno/finderjs" data-via="brazill">Tweet</a>
+      <a href="https://twitter.com/brazill" class="twitter-follow-button" data-show-count="false">Follow @brazill</a>
+    </div>
+
+    <p>Created by <a href="http://twitter.com/brazill">Mark Matyas</a>. Source code released under the <a href="https://raw.githubusercontent.com/mynameistechno/finderjs/master/LICENSE">MIT license</a>.</p>
+    <small>Icons by <a href="http://fontawesome.io">Font Awesome</a></small>
+  </footer>
 
 <script src="bundle.js"></script>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 </body>
 </html>

@@ -6,17 +6,8 @@
 
 Finder-like ui component for viewing hierarchical content in columns.
 
-More to come. For now just check the source.
 
-## Getting started
-
-### Prerequisites
-
-* [io.js][iojs]/[Node.js][node]
-* Bash shell
-
-[iojs]: https://iojs.org/
-[node]: https://nodejs.org/
+## Contributing
 
 ### Install
 

@@ -177,6 +177,25 @@ test('[util] el', function test(t) {
   t.equal(_.el('div').tagName, 'DIV', 'should return DIV element');
   t.equal(_.el(element), element, 'should return element');
 
+  t.equal(_.el('div.foo').className, 'foo', 'should set classname');
+  t.equal(_.el('div.foo.bar').className, 'foo bar', 'should set classnames');
+
+  t.end();
+});
+
+test('[util] frag', function test(t) {
+  var frag = _.frag();
+
+  t.ok(frag.constructor.toString().match(/DocumentFragment/), 'returns a frag');
+
+  t.end();
+});
+
+test('[util] test', function test(t) {
+  var text = _.text();
+
+  t.ok(text.constructor.toString().match(/text/i), 'returns a text node');
+
   t.end();
 });
 
@@ -207,5 +226,26 @@ test('[util] stop', function test(t) {
 
   t.plan(2);
   _.stop(event);
+  t.end();
+});
+
+test('[util] append', function test(t) {
+  var parent = _.el('div');
+  var div = _.el('div');
+  var children = [
+    _.el('div'),
+    _.el('div'),
+    _.el('div')
+  ];
+
+  // append array of items
+  t.equal(_.append(parent, children), parent, 'return parent');
+  t.equal(
+    parent.childNodes[0].childNodes.length, 3, 'appended array of 3 els');
+
+  parent = _.el('div');
+  _.append(parent, div);
+  t.equal(parent.childNodes[0].childNodes.length, 1, 'appended 1 element');
+
   t.end();
 });

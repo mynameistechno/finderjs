@@ -6,7 +6,6 @@
 
 var extend = require('xtend');
 var document = require('global/document');
-var Delegator = require('dom-delegator');
 var EventEmitter = require('eventemitter3');
 var isArray = require('x-is-array');
 
@@ -35,14 +34,14 @@ module.exports = finder;
  * @return {element} container
  */
 function finder(container, data, options) {
-  var cfg = extend(defaults, options);
-  var delegator = Delegator();
   var emitter = new EventEmitter();
+  var cfg = extend(defaults, {
+    container: container,
+    emitter: emitter
+  }, options);
 
   // xtend doesn't deep merge
-  if (options) {
-    cfg.className = extend(defaults.className, options.className);
-  }
+  cfg.className = extend(defaults.className, options ? options.className : {});
 
   // store the fn so we can call it on subsequent selections
   if (typeof data === 'function') {
@@ -50,17 +49,22 @@ function finder(container, data, options) {
   }
 
   // dom events
-  delegator.addEventListener(
-    container, 'click', finder.clickEvent.bind(null, cfg, emitter));
+  container.addEventListener(
+    'click', finder.clickEvent.bind(null, cfg, emitter));
+  container.addEventListener(
+    'keydown', finder.keydownEvent.bind(null, container, cfg, emitter));
 
   // internal events
-  emitter.on('itemClicked', finder.itemSelected.bind(null, cfg, emitter));
-  emitter.on('columnCreated', finder.addColumn.bind(null, container));
+  emitter.on('item-selected', finder.itemSelected.bind(null, cfg, emitter));
+  emitter.on('column-created', finder.addColumn.bind(null, container));
+  emitter.on(
+    'keyboard-arrow-pressed', finder.navigate.bind(null, cfg, emitter));
 
   _.addClass(container, cfg.className.container);
   finder.createColumn(data, cfg, emitter);
+  container.setAttribute('tabindex', 0);
 
-  return container;
+  return emitter;
 }
 
 /**
@@ -77,18 +81,24 @@ finder.addColumn = function addColumn(container, column) {
  * @param  {object} event value
  */
 finder.itemSelected = function itemSelected(cfg, emitter, value) {
-  var item = value._item;
-  var currCol = value.col;
+  var itemEl = value.item;
+  var item = itemEl._item;
+  var col = value.col;
   var data = item.children || cfg.data;
+  var activeEls = col.getElementsByClassName(cfg.className.active);
 
-  _.nextSiblings(currCol).map(_.remove);
+  if (activeEls.length) {
+    _.removeClass(activeEls[0], cfg.className.active);
+  }
+  _.addClass(itemEl, cfg.className.active);
+  _.nextSiblings(col).map(_.remove);
 
   if (data) {
     finder.createColumn(data, cfg, emitter, item);
   } else if (item.url) {
     document.location.href = item.url;
   } else {
-    console.log('Warning: no action specified');
+    emitter.emit('leaf-selected', item);
   }
 };
 
@@ -100,7 +110,6 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
  */
 finder.clickEvent = function clickEvent(cfg, emitter, event) {
   var el = event.target;
-  var activeEls;
   var col = _.closest(el, function test(el) {
     return _.hasClass(el, cfg.className.col);
   });
@@ -108,21 +117,105 @@ finder.clickEvent = function clickEvent(cfg, emitter, event) {
     return _.hasClass(el, cfg.className.item);
   });
 
-  event.preventDefault();
+  _.stop(event);
 
   // list item clicked
   if (item) {
-    activeEls = col.getElementsByClassName(cfg.className.active);
-    if (activeEls.length) {
-      _.removeClass(activeEls[0], cfg.className.active);
-    }
-    _.addClass(item, cfg.className.active);
-
-    emitter.emit('itemClicked', {
+    emitter.emit('item-selected', {
       col: col,
-      item: item._item
+      item: item
     });
   }
+};
+
+/**
+ * Keydown event handler for container
+ * @param  {object} config
+ * @param  {object} event emitter
+ * @param  {object} event
+ */
+finder.keydownEvent = function keydownEvent(container, cfg, emitter, event) {
+  var arrowCodes = {
+    38: 'up',
+    39: 'right',
+    40: 'down',
+    37: 'left'
+  };
+
+  if (event.keyCode in arrowCodes) {
+    emitter.emit('keyboard-arrow-pressed', {
+      arrow: arrowCodes[event.keyCode],
+      container: container
+    });
+  }
+};
+
+/**
+ * keyboard navigation - supports arrows keys to select adjacent items
+ * @param  {object} config
+ * @param  {object} event emitter
+ * @param  {object} event value
+ */
+finder.navigate = function navigate(cfg, emitter, value) {
+  var active = finder.findLastActive(value.container, cfg);
+  var target = null;
+  var dir = value.arrow;
+  var item;
+  var col;
+
+  if (active) {
+    item = active.item;
+    col = active.col;
+
+    if (dir === 'up' && item.previousSibling) {
+      target = item.previousSibling;
+    } else if (dir === 'down' && item.nextSibling) {
+      target = item.nextSibling;
+    } else if (dir === 'right' && col.nextSibling) {
+      col = col.nextSibling;
+      target = _.first(col, '.' + cfg.className.item);
+    } else if (dir === 'left' && col.previousSibling){
+      col = col.previousSibling;
+      target = _.first(col, '.' + cfg.className.active) ||
+        _.first(col, '.' + cfg.className.item);
+    }
+  } else {
+    col = _.first(value.container, '.' + cfg.className.col);
+    target = _.first(col, '.' + cfg.className.item);
+  }
+
+  if (target) {
+    emitter.emit('item-selected', {
+      col: col,
+      item: target
+    });
+  }
+};
+
+/**
+ * Find last (right-most) active item and column
+ * @param  {Element} container
+ * @param  {Object} config
+ * @return {Object}
+ */
+finder.findLastActive = function findLastActive(container, cfg) {
+  var activeItems = container.getElementsByClassName(cfg.className.active);
+  var item;
+  var col;
+
+  if (!activeItems.length) {
+    return null;
+  }
+
+  item = activeItems[activeItems.length - 1];
+  col = _.closest(item, function test(el) {
+    return _.hasClass(el, cfg.className.col);
+  });
+
+  return {
+    col: col,
+    item: item
+  };
 };
 
 /**
@@ -147,7 +240,7 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent) {
     div.appendChild(list);
     _.addClass(div, cfg.className.col);
 
-    emitter.emit('columnCreated', div);
+    emitter.emit('column-created', div);
   } else {
     throw new Error('Unknown data type');
   }
@@ -182,18 +275,13 @@ finder.createList = function createList(data, cfg) {
  */
 finder.createItemContent = function createItemContent(cfg, item) {
   var frag = document.createDocumentFragment();
-  var prepend = _.el('div');
-  var content = _.el('div');
-  var append = _.el('div');
+  var prepend = _.el('div.' + cfg.className.itemPrepend);
+  var content = _.el('div.' + cfg.className.itemContent);
+  var append = _.el('div.' + cfg.className.itemAppend);
 
-  prepend.className = cfg.className.itemPrepend;
   frag.appendChild(prepend);
-
-  content.className = cfg.className.itemContent;
   content.appendChild(document.createTextNode(item.label));
   frag.appendChild(content);
-
-  append.className = cfg.className.itemAppend;
   frag.appendChild(append);
 
   return frag;
@@ -214,7 +302,8 @@ finder.createItem = function createItem(cfg, item) {
   frag = createItemContent.call(null, cfg, item);
   a.appendChild(frag);
 
-  a.href = '#';
+  a.href = '';
+  a.setAttribute('tabindex', -1);
   if (item.url) {
     a.href = item.url;
     liClassNames.push(cfg.className.url);

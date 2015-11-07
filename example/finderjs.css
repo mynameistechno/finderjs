@@ -1,15 +1,18 @@
 .fjs-container {
   display: flex;
+  overflow: auto;
+  font-size: .9em;
+  outline:none;
+  background-color: white;
+  border: solid 1px lightgray;
 }
 
 .fjs-col {
-  width: 200px;
+  min-width: 200px;
   min-height: 200px;
   max-height: 600px;
   overflow-y: auto;
   border-right: solid 1px lightgray;
-  border-top: solid 1px lightgray;
-  border-bottom: solid 1px lightgray;
 }
 
 .fjs-item a {
@@ -17,21 +20,29 @@
   padding: 5px;
   text-decoration: none;
   color: black;
-  align-items: center;
+  outline:none;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.fjs-item a span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fjs-item a span i {
+  padding-right: 5px;
 }
 
 .fjs-item.fjs-active a {
-  background-color: lightgray;
-  color: white;
-}
-
-.fjs-col:first-of-type {
-  border-left: solid 1px lightgray;
+  background-color: #DEDEDE;
 }
 
 .fjs-col:nth-last-child(2) .fjs-item.fjs-active a,
 .fjs-col:last-child .fjs-item.fjs-active a {
   background-color: dodgerblue;
+  color: white;
 }
 
 .fjs-list {
@@ -46,5 +57,59 @@
   white-space: nowrap;
 }
 
+i.fa-folder {
+  color: #90E4FF;
+}
 
+i.fa-file-o {
+  color: #A7A7A7;
+}
 
+i.fa-external-link {
+  color: #629EFF;
+  font-size: smaller;
+}
+
+i.fa-caret-right {
+  color: gray;
+  padding: 0 0 0 .5em;
+}
+
+.fjs-col:nth-last-child(2) .fjs-item.fjs-active a i.fa-caret-right,
+.fjs-col:last-child .fjs-item.fjs-active a i.fa-caret-right {
+  color: white;
+}
+
+.leaf-col {
+  align-items: center;
+  display: flex;
+  flex: 2;
+  padding: .5em 1.5em;
+  justify-content: center;
+  border-right: 0;
+}
+
+.leaf-row {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 1.3em;
+}
+
+.leaf-row i.fa-file-o {
+  font-size: 4em;
+  margin: 20px 0;
+}
+
+.leaf-col .meta {
+  font-size: .7em;
+}
+
+.leaf-col .meta strong {
+  color: #C1C1C1;
+  font-weight: normal;
+}
+
+.leaf-col .meta:first-of-type {
+  margin-top: 1.5em;
+}

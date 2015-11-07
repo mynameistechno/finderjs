@@ -34,7 +34,6 @@
     "xhr": "^2.1.0"
   },
   "dependencies": {
-    "dom-delegator": "^13.1.0",
     "eventemitter3": "^1.1.1",
     "global": "^4.3.0",
     "x-is-array": "^0.1.0",

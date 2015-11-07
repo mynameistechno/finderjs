@@ -1,6 +1,8 @@
 npmBin = node_modules/.bin
+build = build
+jqueryFinder = $(build)/jquery.finder.js
 
-.PHONY: install clean test cover lint watch
+.PHONY: install clean test cover lint watch build build-finderjs build-jquery
 
 install:
 	rm -rf node_modules/
@@ -8,7 +10,7 @@ install:
 
 clean:
 	rm -rf coverage/
-	rm example/bundle.js
+	rm -f example/bundle.js
 	rm -rf build/
 
 test:
@@ -23,7 +25,17 @@ lint:
 watch:
 	$(npmBin)/watchify $(in) -d -v -o $(out)
 
-build: clean
+build: build-finderjs build-jquery
+
+build-finderjs: clean
 	$(npmBin)/browserify --no-builtins example/index.js -o example/bundle.js
-	mkdir build
-	$(npmBin)/browserify --full-paths --no-builtins --s finderjs -g uglifyify index.js -o build/finder.js
+	mkdir $(build)
+	$(npmBin)/browserify --full-paths --no-builtins --s finderjs -g uglifyify index.js -o $(build)/finder.min.js
+
+build-jquery: build-finderjs
+	echo "/* " > $(jqueryFinder)
+	cat LICENSE >> $(jqueryFinder)
+	echo "\n*/\n" >> $(jqueryFinder)
+	cat $(build)/finder.min.js >> $(jqueryFinder)
+	echo "\n" >> $(jqueryFinder)
+	cat jqueryWrapper.js >> $(jqueryFinder)

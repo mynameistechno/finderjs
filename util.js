@@ -26,11 +26,38 @@ function isElement(element) {
  * @return {Element} element
  */
 function el(element) {
+  var classes = [];
+  var tag = element;
+  var el;
+
   if (isElement(element)) {
     return element;
   }
 
-  return document.createElement(element);
+  classes = element.split('.');
+  if (classes.length > 1) {
+    tag = classes[0];
+  }
+  el = document.createElement(tag);
+  addClass(el, classes.slice(1));
+
+  return el;
+}
+
+/**
+ * createDocumentFragment shortcut
+ * @return {DocumentFragment}
+ */
+function frag() {
+  return document.createDocumentFragment();
+}
+
+/**
+ * createTextNode shortcut
+ * @return {TextNode}
+ */
+function text(text) {
+  return document.createTextNode(text);
 }
 
 /**
@@ -176,8 +203,30 @@ function stop(event) {
   return event;
 }
 
+/**
+ * Returns first element in parent that matches selector
+ * @param  {Element} parent
+ * @param  {String} selector
+ * @return {Element}
+ */
+function first(parent, selector) {
+  return parent.querySelector(selector);
+}
+
+function append(parent, children) {
+  var _frag = frag();
+  var children = isArray(children) ? children : [children];
+
+  children.forEach(_frag.appendChild.bind(_frag));
+  parent.appendChild(_frag);
+
+  return parent;
+}
+
 module.exports = {
   el: el,
+  frag: frag,
+  text: text,
   closest: closest,
   addClass: addClass,
   removeClass: removeClass,
@@ -185,5 +234,7 @@ module.exports = {
   nextSiblings: nextSiblings,
   previousSiblings: previousSiblings,
   remove: remove,
-  stop: stop
+  stop: stop,
+  first: first,
+  append: append
 };
