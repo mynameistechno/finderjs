@@ -127,3 +127,15 @@ section:nth-child(2n) {
 .twitter-follow-button {
   margin-left: 15px;
 }
+
+code {
+  display: block;
+  padding: 2em 1.5em;
+  border: solid 1px #d9d9d9;
+  background: #f8f8f8;
+}
+
+pre {
+  margin:0;
+  padding:0;
+}

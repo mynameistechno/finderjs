@@ -29,9 +29,9 @@ module.exports = finder;
 
 /**
  * @param  {element} container
- * @param  {object} data
+ * @param  {Array|Function} data
  * @param  {object} options
- * @return {element} container
+ * @return {object} event emitter
  */
 function finder(container, data, options) {
   var emitter = new EventEmitter();

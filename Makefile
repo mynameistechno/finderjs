@@ -30,7 +30,7 @@ build: build-finderjs build-jquery
 build-finderjs: clean
 	$(npmBin)/browserify --no-builtins example/index.js -o example/bundle.js
 	mkdir $(build)
-	$(npmBin)/browserify --full-paths --no-builtins --s finderjs -g uglifyify index.js -o $(build)/finder.min.js
+	$(npmBin)/browserify --full-paths --no-builtins --s finder -g uglifyify index.js -o $(build)/finder.min.js
 
 build-jquery: build-finderjs
 	echo "/* " > $(jqueryFinder)

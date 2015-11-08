@@ -7,6 +7,47 @@ var _ = require('../util');
 var emitter;
 var xhrCnt = 0;
 
+module.exports = createExample;
+
+
+function createExample(container) {
+  emitter = finder(container, remoteSource, {
+    createItemContent: createItemContent
+  });
+
+  // scroll to the right if necessary
+  emitter.on('column-created', function columnCreated() {
+    container.scrollLeft = container.scrollWidth - container.clientWidth;
+  });
+}
+
+function remoteSource(parent, cfg, callback) {
+  var loading = createSimpleColumn(
+    'Loading...', ['fa', 'fa-refresh', 'fa-spin']);
+  var xhrUid = ++xhrCnt;
+
+  cfg.emitter.emit('column-created', loading);
+  xhr({
+    uri: 'http://jsonplaceholder.typicode.com/users'
+  }, function done(err, resp, body) {
+    var data = JSON.parse(body);
+
+    _.remove(loading);
+
+    // stale request
+    if (xhrUid !== xhrCnt) {
+      return;
+    }
+
+    callback(data.map(function each(item) {
+      return {
+        label: item.address.city,
+        id: item.id
+      };
+    }));
+  });
+}
+
 // item render
 function createItemContent(cfg, item) {
   var data = item.children || cfg.data;
@@ -56,42 +97,4 @@ function createSimpleColumn(text, classes) {
   return _.append(div, row);
 }
 
-function remoteSource(parent, cfg, callback) {
-  var loading = createSimpleColumn(
-    'Loading...', ['fa', 'fa-refresh', 'fa-spin']);
-  var xhrUid = ++xhrCnt;
 
-  cfg.emitter.emit('column-created', loading);
-  xhr({
-    uri: 'http://jsonplaceholder.typicode.com/users'
-  }, function done(err, resp, body) {
-    var data = JSON.parse(body);
-
-    _.remove(loading);
-
-    // stale request
-    if (xhrUid !== xhrCnt) {
-      return;
-    }
-
-    callback(data.map(function each(item) {
-      return {
-        label: item.address.city,
-        id: item.id
-      };
-    }));
-  });
-}
-
-function createExample(container) {
-  emitter = finder(container, remoteSource, {
-    createItemContent: createItemContent
-  });
-
-  // scroll to the right if necessary
-  emitter.on('column-created', function columnCreated() {
-    container.scrollLeft = container.scrollWidth - container.clientWidth;
-  });
-}
-
-module.exports = createExample;

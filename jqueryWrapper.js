@@ -11,7 +11,7 @@
   $.fn[name] = function _finderjs(data, options) {
     return this.each(function each() {
       if (!$.data(this, '_' + name)) {
-        $.data(this, '_' + name, finderjs(this, data, options));
+        $.data(this, '_' + name, finder(this, data, options));
       }
     });
   };

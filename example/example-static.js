@@ -130,6 +130,25 @@ var data = [{
 }];
 var emitter;
 
+module.exports = createExample;
+
+
+function createExample(container) {
+  emitter = finder(container, data, {
+    createItemContent: createItemContent
+  });
+
+  // scroll to the right if necessary
+  emitter.on('column-created', function columnCreated() {
+    container.scrollLeft = container.scrollWidth - container.clientWidth;
+  });
+
+  // when leaf node selected, display
+  emitter.on('leaf-selected', function selected(item) {
+    emitter.emit('column-created', createSimpleColumn(item));
+  });
+}
+
 // item render
 function createItemContent(cfg, item) {
   var data = item.children || cfg.data;
@@ -185,21 +204,3 @@ function createSimpleColumn(item) {
 
   return _.append(div, row);
 }
-
-function createExample(container) {
-  emitter = finder(container, data, {
-    createItemContent: createItemContent
-  });
-
-  // scroll to the right if necessary
-  emitter.on('column-created', function columnCreated() {
-    container.scrollLeft = container.scrollWidth - container.clientWidth;
-  });
-
-  // when leaf node selected, display
-  emitter.on('leaf-selected', function selected(item) {
-    emitter.emit('column-created', createSimpleColumn(item));
-  });
-}
-
-module.exports = createExample;

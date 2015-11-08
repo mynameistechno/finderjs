@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Finder.js</title>
-  <link href="site.css" media="all" rel="stylesheet">
-  <link href="finderjs.css" media="all" rel="stylesheet">
+  <link href="example/site.css" media="all" rel="stylesheet">
+  <link href="example/finderjs.css" media="all" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" lazyload>
 </head>
 <body class="site">
@@ -14,10 +14,13 @@
 
     <div class="actions">
       <a class="btn btn-hi" href="https://github.com/mynameistechno/finderjs">
-        <span class="fa fa-github"></span> View Source
+        <span class="fa fa-github"></span> View on Github
       </a>
       <a class="btn" href="https://github.com/mynameistechno/finderjs/archive/master.zip">
-        <span class="fa fa-download"></span> Download Zip
+        Download .zip
+      </a>
+      <a class="btn" href="https://github.com/mynameistechno/finderjs/archive/master.tar.gz">
+        Download .tar.gz
       </a>
     </div>
   </header>
@@ -33,22 +36,47 @@
         <li><strong>Stlying:</strong> Use any CSS/framework of choice, or feel free to use the example CSS (which leverages <a href="http://www.w3.org/TR/css-flexbox-1/">Flexbox<span class="fa fa-external-link"></span></a>). Additionally, classnames are customizable.</li>
         <li><strong>Keyboard navigation:</strong> use arrows keys to navigate.</li>
         <li><strong>Events:</strong> several events are emitted to allow for custom behavior. </li>
-        <li><strong>Module formats:</strong> Provided as an npm module (CommonJS),exported as the global <em>finderjs</em>, and as a jquery plugin.</li>
+        <li><strong>Module formats:</strong> Provided as an npm module (CommonJS), a jQuery plugin, and exported as the global <em>finderjs</em>.</li>
         <li><strong>File size:</strong> 4KB minified and gzipped.</li>
         <li><strong>Test coverage:</strong> <a href="https://codeclimate.com/github/mynameistechno/finderjs/coverage">100%<span class="fa fa-external-link"></span></a>.</li>
       </ul>
     </section>
 
     <section class="example">
-      <h2>Example #1</h2>
-      <p>Data source is an array that contains all necessary columns.</p>
+      <h2>Examples</h2>
+
+      <h4>Example A</h4>
+      <p>The data source is an array.</p>
       <div id="container1"></div>
+      <p><a href="https://github.com/mynameistechno/finderjs/blob/master/example/example-static.js"><span class="fa fa-code"></span>View source</a></p>
     </section>
 
     <section class="example">
-      <h2>Example #2</h2>
-      <p>Data source is a function that pulls in sample data from <a href="http://jsonplaceholder.typicode.com/">JSONPlaceholder<span class="fa fa-external-link"></span></a>.</p>
+      <h4>Example B</h4>
+      <p>The data source is a function that pulls in sample data from <a href="http://jsonplaceholder.typicode.com/">JSONPlaceholder<span class="fa fa-external-link"></span></a>.</p>
       <div id="container2"></div>
+      <p><a href="https://github.com/mynameistechno/finderjs/blob/master/example/example-async.js"><span class="fa fa-code"></span>View source</a></p>
+    </section>
+
+    <section>
+      <h2>Installation</h2>
+
+      <pre><code class="shell">npm install finderjs</code></pre>
+
+      <p>or download the latest <a href="https://github.com/mynameistechno/finderjs/releases">release</a> and include the standalone script or jquery plugin directly onto your page.</p>
+    </section>
+
+    <section>
+      <h2>Usage</h2>
+
+      <p>FinderJS expects a container HTML element, a data source (Array or Function), and an options object.</p>
+     <pre><code class="javascript">
+finder(container, data, options)
+.on('leaf-selected', function(item) {
+  console.log('Leaf node selected', item);
+});
+      </code></pre>
+      <p>For more information see the <a href="https://github.com/mynameistechno/finderjs">README</a> or view the source of the <a href="https://github.com/mynameistechno/finderjs/tree/master/example">examples</a> above.</p>
     </section>
   </main>
 
@@ -64,7 +92,10 @@
     <small>Icons by <a href="http://fontawesome.io">Font Awesome</a></small>
   </footer>
 
-<script src="bundle.js"></script>
+<script src="example/bundle.js"></script>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
