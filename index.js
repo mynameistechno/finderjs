@@ -174,7 +174,7 @@ finder.navigate = function navigate(cfg, emitter, value) {
     } else if (dir === 'right' && col.nextSibling) {
       col = col.nextSibling;
       target = _.first(col, '.' + cfg.className.item);
-    } else if (dir === 'left' && col.previousSibling){
+    } else if (dir === 'left' && col.previousSibling) {
       col = col.previousSibling;
       target = _.first(col, '.' + cfg.className.active) ||
         _.first(col, '.' + cfg.className.item);
