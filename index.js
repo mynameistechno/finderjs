@@ -56,9 +56,10 @@ function finder(container, data, options) {
 
   // internal events
   emitter.on('item-selected', finder.itemSelected.bind(null, cfg, emitter));
-  emitter.on('column-created', finder.addColumn.bind(null, container));
   emitter.on(
-    'keyboard-arrow-pressed', finder.navigate.bind(null, cfg, emitter));
+    'create-column', finder.addColumn.bind(null, container, cfg, emitter));
+  emitter.on(
+    'navigate', finder.navigate.bind(null, cfg, emitter));
 
   _.addClass(container, cfg.className.container);
   finder.createColumn(data, cfg, emitter);
@@ -71,8 +72,10 @@ function finder(container, data, options) {
  * @param {element} container
  * @param {element} column to append to container
  */
-finder.addColumn = function addColumn(container, column) {
-  container.appendChild(column);
+finder.addColumn = function addColumn(container, cfg, emitter, col) {
+  container.appendChild(col);
+
+  emitter.emit('column-created', col);
 };
 
 /**
@@ -143,23 +146,24 @@ finder.keydownEvent = function keydownEvent(container, cfg, emitter, event) {
   };
 
   if (event.keyCode in arrowCodes) {
-    emitter.emit('keyboard-arrow-pressed', {
-      arrow: arrowCodes[event.keyCode],
+    emitter.emit('navigate', {
+      direction: arrowCodes[event.keyCode],
       container: container
     });
   }
 };
 
 /**
- * keyboard navigation - supports arrows keys to select adjacent items
+ * Navigate the finder up, down, right, or left
  * @param  {object} config
  * @param  {object} event emitter
- * @param  {object} event value
+ * @param  {object} event value - `container` prop contains a reference to the
+ * container, and `direction` can be 'up', 'down', 'right', 'left'
  */
 finder.navigate = function navigate(cfg, emitter, value) {
   var active = finder.findLastActive(value.container, cfg);
   var target = null;
-  var dir = value.arrow;
+  var dir = value.direction;
   var item;
   var col;
 
@@ -240,7 +244,7 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent) {
     div.appendChild(list);
     _.addClass(div, cfg.className.col);
 
-    emitter.emit('column-created', div);
+    emitter.emit('create-column', div);
   } else {
     throw new Error('Unknown data type');
   }

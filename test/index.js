@@ -50,7 +50,7 @@ test('[finder] createColumn', function test(t) {
   };
   var emitter = new EventEmitter();
 
-  emitter.on('column-created', function listener(col) {
+  emitter.on('create-column', function listener(col) {
     t.equal(col.tagName, 'DIV', 'should return a div');
     t.ok(
       col.className.indexOf('fjs-col') !== -1,
@@ -142,7 +142,7 @@ test('[finder] itemSelected', function test(t) {
 
   // test plan is to verify the column-created event is emitted
   t.plan(3);
-  emitter.on('column-created', t.ok.bind(null, true, 'Column is created'));
+  emitter.on('create-column', t.ok.bind(null, true, 'Column is created'));
   finder.itemSelected(cfg, emitter, value);
 
   // item.children not provided, uses item.url
@@ -265,17 +265,17 @@ test('[finder] navigate', function test(t) {
   finder.navigate(cfg, emitter, value);
 
   // up arrow
-  value.arrow = 'up';
+  value.direction = 'up';
   item.previousSibling = sibling;
   finder.navigate(cfg, emitter, value);
 
   // down arrow
-  value.arrow = 'down';
+  value.direction = 'down';
   item.nextSibling = sibling;
   finder.navigate(cfg, emitter, value);
 
   // right arrow
-  value.arrow = 'right';
+  value.direction = 'right';
   col.nextSibling = sibling;
   sibling.querySelector = function qs() {
     return item;
@@ -283,7 +283,7 @@ test('[finder] navigate', function test(t) {
   finder.navigate(cfg, emitter, value);
 
   // left arrow - select active
-  value.arrow = 'left';
+  value.direction = 'left';
   col.previousSibling = sibling;
   sibling.querySelector = function qs() {
     return item;
@@ -291,7 +291,7 @@ test('[finder] navigate', function test(t) {
   finder.navigate(cfg, emitter, value);
 
   // left arrow - select first
-  value.arrow = 'left';
+  value.direction = 'left';
   sibling.querySelector = function qs(sel) {
     if (sel === '.' + cfg.className.active) {
       return false;
@@ -319,7 +319,7 @@ test('[finder] keydownEvent', function test(t) {
 
   t.plan(1);
   emitter.on(
-    'keyboard-arrow-pressed', t.ok.bind(null, true, 'keyboard arrow pressed'));
+    'navigate', t.ok.bind(null, true, 'keyboard arrow pressed'));
   finder.keydownEvent(null, null, emitter, event);
 
   event.keyCode = 38;

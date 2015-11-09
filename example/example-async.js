@@ -26,7 +26,7 @@ function remoteSource(parent, cfg, callback) {
     'Loading...', ['fa', 'fa-refresh', 'fa-spin']);
   var xhrUid = ++xhrCnt;
 
-  cfg.emitter.emit('column-created', loading);
+  cfg.emitter.emit('create-column', loading);
   xhr({
     uri: 'http://jsonplaceholder.typicode.com/users'
   }, function done(err, resp, body) {

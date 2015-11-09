@@ -138,18 +138,18 @@ function createExample(container) {
     createItemContent: createItemContent
   });
 
-  // scroll to the right if necessary
+  // when a leaf node selected, display the details in a new column
+  emitter.on('leaf-selected', function selected(item) {
+    emitter.emit('create-column', createSimpleColumn(item));
+  });
+
+  // scroll to the right if necessary when a new column is created
   emitter.on('column-created', function columnCreated() {
     container.scrollLeft = container.scrollWidth - container.clientWidth;
   });
-
-  // when leaf node selected, display
-  emitter.on('leaf-selected', function selected(item) {
-    emitter.emit('column-created', createSimpleColumn(item));
-  });
 }
 
-// item render
+// how each item in a column should be rendered
 function createItemContent(cfg, item) {
   var data = item.children || cfg.data;
   var frag = document.createDocumentFragment();
