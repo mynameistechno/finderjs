@@ -1,10 +1,10 @@
 .site {
+  color: #404040;
   display: flex;
-  min-height: 100vh;
   flex-direction: column;
   font: 400 1em/1.4 "Lucida Grande", Arial, Verdana, sans-serif;
   margin: 0;
-  color: #404040;
+  min-height: 100vh;
   text-rendering: optimizeLegibility;
 }
 
@@ -21,20 +21,20 @@ a:hover {
   color: #007CAB;
 }
 
-a span.fa {
+a .fa {
   padding-right: 5px;
 }
 
 .header {
-  padding: 4rem 0 2rem 0;
   background-color: #ECECEC;
+  padding: 4rem 0 2rem 0;
   text-align: center;
 }
 
 .header h1 {
-  margin: 0;
   font-size: 3em;
   letter-spacing: -.075em;
+  margin: 0;
 }
 
 .header h1 span {
@@ -47,15 +47,15 @@ a span.fa {
 }
 
 .sub-title {
-  margin: .5em 0 1em;
   font-size: .9em;
   font-weight: 300;
+  margin: .5em 0 1em;
 }
 
 .header .actions {
   display: flex;
-  justify-content: center;
   font-size: .9em;
+  justify-content: center;
   margin: 2em 0 0 0;
 }
 
@@ -69,10 +69,10 @@ a span.fa {
 
 .btn {
   background-color: #D8D8D8;
-  padding: .6em 2em;
-  text-decoration: none;
   border-radius: 2px;
   color: #404040;
+  padding: .6em 2em;
+  text-decoration: none;
   transition: background-color .2s;
 }
 
@@ -96,15 +96,15 @@ a span.fa {
 }
 
 nav {
-  margin: 2em 0 0 0;
   font-size: .9em;
+  margin: 2em 0 0 0;
 }
 
 nav ul {
   list-style: none;
-  text-align: center;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
 nav ul li {
@@ -125,15 +125,15 @@ section:nth-child(2n) {
 }
 
 .footer {
-  text-align: center;
-  padding: 1.5rem;
   background: #565656;
   color: #ABABAB;
   font-size: .85em;
+  padding: 1.5rem;
+  text-align: center;
 }
 
 .footer .links {
-   padding: 0 0 1em;
+  padding: 0 0 1em;
 }
 
 .footer a {
@@ -146,8 +146,8 @@ section:nth-child(2n) {
 
 .fa-external-link {
   font-size: .7em;
-  vertical-align: middle;
   margin-left: 4px;
+  vertical-align: middle;
 }
 
 .twitter-follow-button {
@@ -155,10 +155,10 @@ section:nth-child(2n) {
 }
 
 code {
+  background: #f8f8f8;
+  border: solid 1px #d9d9d9;
   display: block;
   padding: 2em 1.5em;
-  border: solid 1px #d9d9d9;
-  background: #f8f8f8;
 }
 
 pre {
