@@ -4,8 +4,11 @@
   display: flex;
   font-size: .9em;
   min-height: 400px;
-  outline:none;
   overflow: auto;
+}
+
+.fjs-container:focus {
+  outline:none;
 }
 
 .fjs-col {
@@ -21,9 +24,12 @@
   color: black;
   display: flex;
   justify-content: space-between;
-  outline:none;
   padding: 5px;
   text-decoration: none;
+}
+
+.fjs-item a:focus {
+  outline:none;
 }
 
 .fjs-item a span {
@@ -92,8 +98,8 @@
 
 .leaf-row {
   display: flex;
-  font-size: 1.3em;
   flex-direction: column;
+  font-size: 1.3em;
   text-align: center;
 }
 

@@ -31,13 +31,13 @@ a .fa {
   text-align: center;
 }
 
-.header h1 {
+.header .main-title {
   font-size: 3em;
   letter-spacing: -.075em;
   margin: 0;
 }
 
-.header h1 span {
+.header .main-title span {
   font-weight: lighter;
   text-transform: uppercase;
 }
@@ -46,8 +46,8 @@ a .fa {
   color: green;
 }
 
-.sub-title {
-  font-size: .9em;
+.header .sub-title {
+  font-size: .95em;
   font-weight: 300;
   margin: .5em 0 1em;
 }
@@ -113,10 +113,10 @@ nav ul li {
 }
 
 section {
-  padding: 3em 1.5em;
+  padding: 2em 1.5em 3em 1.5em;
 }
 
-section h4 {
+section .sub-title {
   margin: 0 0 1em;
 }
 
