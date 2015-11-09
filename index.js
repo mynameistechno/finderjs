@@ -146,6 +146,8 @@ finder.keydownEvent = function keydownEvent(container, cfg, emitter, event) {
   };
 
   if (event.keyCode in arrowCodes) {
+    _.stop(event);
+
     emitter.emit('navigate', {
       direction: arrowCodes[event.keyCode],
       container: container

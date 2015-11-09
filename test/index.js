@@ -315,7 +315,10 @@ test('[finder] navigate', function test(t) {
 
 test('[finder] keydownEvent', function test(t) {
   var emitter = new EventEmitter();
-  var event = {};
+  var event = {
+    preventDefault: function noop() {},
+    stopPropagation: function noop() {}
+  };
 
   t.plan(1);
   emitter.on(
