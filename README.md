@@ -29,15 +29,15 @@ Parameter | Type | Description
 ----------|------|------------
 container | Element| Container element for finder
 [data](#source-is-an-array)| Array&#124;Function | Data source can be an array or function
-[options](#options)| Object         | Configure classNames, item rendering, etc
+[options](#options)| Object | Configure classNames, item rendering, etc
 
 ### Data
 
-The hierarchical data is represented with nested arrays. Each item in the array should be an object. If the object doesn't contain a `children` property it is considered a leaf node. When a leaf node is selected, the `leaf-selected` event will be emitted. The `children` property should be an array. When a node has children and it is selected, in addition to the `item-selected` event being emitted, it will use the children to populate the next column.
-
-A data source can be an array as described above, or a function that executes a callback with the data. This is handy for asynchronous data, such as a remote web service.
+The hierarchical data is represented with nested arrays. A data source can be an array or a function that executes a callback with the data (an array). This is handy for asynchronous data, such as a remote web service.
 
 #### Source is an array
+
+Each item in the array itself should be an object. When the data source is an array, each object that doesn't contain a `children` property is considered a leaf node. When a leaf node is selected, the `leaf-selected` event will be emitted. When present, the value of the `children` property should be an array. When a node has children and it is selected, it will use the `children` to populate the next column.
 
 ```javascript
 var container = document.getElementById('container');
@@ -65,6 +65,8 @@ See [this example](example/example-static.js) for more details.
 
 #### Source is a function
 
+When the data source is a function there is no need for the `children` property. This function will be called on every selection and will pass along the selected item. A callback is provided and should be called only if there are children for a new column.
+
 ```javascript
 var container = document.getElementById('container');
 var options = {};
@@ -77,13 +79,20 @@ var options = {};
  */
 function remoteSource(parent, cfg, callback) {
   var children = [...];
-  callback(children);
+
+  if (children.length) {
+    callback(children);
+  }
 }
 
 var f = finder(container, remoteSource, options);
 ```
 
 See [this example](example/example-async.js) for more details.
+
+#### Notes
+
+If an object has a `url` property it will be treated slightly differently: the anchor tag that wraps the item will have the `href` attribute assigned to it. Upon selection of this item the browser will be redirected to the provided URL.
 
 ### Events
 
@@ -104,7 +113,7 @@ See the examples for more [details](example).
 Option | Type |Description
 -------|------|-----------
 `className`| Object | Override the [default classnames](https://github.com/mynameistechno/finderjs/blob/master/index.js#L14) by populating this object
-`createItemContent` | Function | Define how each item is rendered. The first parameter passed in is the `config` object and the second is the `item` object that is currently being iterated on
+`createItemContent` | Function | Define how each item is rendered. The first parameter passed in is the `config` object and the second is the `item` object that is currently being iterated on. It should return an HTML Element.
 
 ## Project commands
 

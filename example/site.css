@@ -21,8 +21,12 @@ a:hover {
   color: #007CAB;
 }
 
+a span.fa {
+  padding-right: 5px;
+}
+
 .header {
-  padding: 4rem 0;
+  padding: 4rem 0 2rem 0;
   background-color: #ECECEC;
   text-align: center;
 }
@@ -30,11 +34,16 @@ a:hover {
 .header h1 {
   margin: 0;
   font-size: 3em;
+  letter-spacing: -.075em;
 }
 
 .header h1 span {
   font-weight: lighter;
   text-transform: uppercase;
+}
+
+.fa-tree {
+  color: green;
 }
 
 .sub-title {
@@ -73,12 +82,12 @@ a:hover {
 }
 
 .btn-hi {
-  background-color: #47E094;
+  background-color: #333;
   color: white;
 }
 
 .btn-hi:hover {
-  background-color: #3DB97B;
+  background-color: #4078c0;
   color: white;
 }
 
@@ -86,11 +95,28 @@ a:hover {
   color: #00aced;
 }
 
-section {
-  padding: 2.5em 1.5em;
+nav {
+  margin: 2em 0 0 0;
+  font-size: .9em;
 }
 
-section h2 {
+nav ul {
+  list-style: none;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  display: inline-block;
+  padding: 0 10px;
+}
+
+section {
+  padding: 3em 1.5em;
+}
+
+section h4 {
   margin: 0 0 1em;
 }
 

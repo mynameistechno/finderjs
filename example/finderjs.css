@@ -5,6 +5,7 @@
   outline:none;
   background-color: white;
   border: solid 1px lightgray;
+  min-height: 400px;
 }
 
 .fjs-col {
@@ -96,9 +97,14 @@ i.fa-caret-right {
   font-size: 1.3em;
 }
 
-.leaf-row .fa-file-o {
+.leaf-row .fa {
   font-size: 4em;
   margin: 20px 0;
+  color: #A7A7A7;
+}
+
+.leaf-row .fa-refresh {
+  font-size: 2em;
 }
 
 .leaf-col .meta {
