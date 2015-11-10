@@ -177,3 +177,7 @@ pre {
   border-radius: 2px;
   padding: 1em;
 }
+
+#container2 .fjs-col {
+  height: 500px;
+}
