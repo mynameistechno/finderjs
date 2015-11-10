@@ -9,7 +9,7 @@
 }
 
 .site-content {
-  flex: 1;
+  flex: 1 0 auto;
   padding: 0 0 3em;
 }
 

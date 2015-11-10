@@ -14,7 +14,7 @@
 .fjs-col {
   border-right: solid 1px lightgray;
   max-height: 600px;
-  min-height: 200px;
+  min-height: inherit;
   min-width: 200px;
   overflow-y: auto;
 }
