@@ -4,6 +4,7 @@
   flex-direction: column;
   font: 400 1em/1.4 "Lucida Grande", Arial, Verdana, sans-serif;
   margin: 0;
+  min-width: 38em;
   min-height: 100vh;
   text-rendering: optimizeLegibility;
 }
@@ -116,6 +117,11 @@ section {
   padding: 2em 1.5em 3em 1.5em;
 }
 
+.section-container {
+  margin: 0 auto;
+  max-width: 50em;
+}
+
 section .sub-title {
   margin: 0 0 1em;
 }
@@ -164,4 +170,10 @@ code {
 pre {
   margin:0;
   padding:0;
+}
+
+.alert {
+  background-color: #FEFFDD;
+  border-radius: 2px;
+  padding: 1em;
 }
