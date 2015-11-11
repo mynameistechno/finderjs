@@ -27,6 +27,8 @@ test('[util] hasClass', function test(t) {
 test('[util] addClass', function test(t) {
   var el = document.createElement('div');
 
+  t.plan(6);
+
   _.addClass(el, 'bananaslug123');
   t.equal(el.className, 'bananaslug123', 'should add the class');
 
@@ -49,11 +51,18 @@ test('[util] addClass', function test(t) {
     'derp bananaslug456 bananaslug123',
     'should add all classes in string');
 
+  el.classList = {
+    add: t.ok.bind(null, true, 'native .classList.add() called')
+  };
+  _.addClass(el, 'bananaslug999');
+
   t.end();
 });
 
 test('[util] removeClass', function test(t) {
   var el = document.createElement('div');
+
+  t.plan(9);
 
   el.className = '';
   _.removeClass(el, 'bananaslug123');
@@ -91,6 +100,11 @@ test('[util] removeClass', function test(t) {
   el.className = 'bananaslug456 derp bananaslug123';
   _.removeClass(el, 'bananaslug456 bananaslug123');
   t.equal(el.className, 'derp', 'should remove all classes in string');
+
+  el.classList = {
+    remove: t.ok.bind(null, true, 'native .classList.remove() called')
+  };
+  _.removeClass(el, 'bananaslug999');
 
   t.end();
 });

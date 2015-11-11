@@ -109,7 +109,11 @@ function addClass(element, className) {
     if (!el.className) {
       el.className = cn;
     } else if (!hasClass(el, cn)) {
-      el.className += ' ' + cn;
+      if (el.classList) {
+        el.classList.add(cn);
+      } else {
+        el.className += ' ' + cn;
+      }
     }
   }
 
@@ -131,8 +135,13 @@ function removeClass(element, className) {
   var classNames = className;
 
   function _removeClass(el, cn) {
-    var classRegex = new RegExp('(?:^|\\s)' + cn + '(?!\\S)', 'g');
-    el.className = el.className.replace(classRegex, '').trim();
+    var classRegex;
+    if (el.classList) {
+      el.classList.remove(cn);
+    } else {
+      classRegex = new RegExp('(?:^|\\s)' + cn + '(?!\\S)', 'g');
+      el.className = el.className.replace(classRegex, '').trim();
+    }
   }
 
   if (!isArray(className)) {
