@@ -11,6 +11,8 @@ var isArray = require('x-is-array');
 
 var _ = require('./util');
 var defaults = {
+  labelKey: 'label',
+  childKey: 'children',
   className: {
     container: 'fjs-container',
     col: 'fjs-col',
@@ -87,7 +89,7 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
   var itemEl = value.item;
   var item = itemEl._item;
   var col = value.col;
-  var data = item.children || cfg.data;
+  var data = item[cfg.childKey] || cfg.data;
   var activeEls = col.getElementsByClassName(cfg.className.active);
 
   if (activeEls.length) {
@@ -286,7 +288,7 @@ finder.createItemContent = function createItemContent(cfg, item) {
   var append = _.el('div.' + cfg.className.itemAppend);
 
   frag.appendChild(prepend);
-  content.appendChild(document.createTextNode(item.label));
+  content.appendChild(document.createTextNode(item[cfg.labelKey]));
   frag.appendChild(content);
   frag.appendChild(append);
 
@@ -317,8 +319,8 @@ finder.createItem = function createItem(cfg, item) {
   if (item.className) {
     liClassNames.push(item.className);
   }
-  if (item.children) {
-    liClassNames.push(cfg.className.children);
+  if (item[cfg.childKey]) {
+    liClassNames.push(cfg.className[cfg.childKey]);
   }
   _.addClass(li, liClassNames);
   li.appendChild(a);

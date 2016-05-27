@@ -116,6 +116,8 @@ test('[finder] createItem', function test(t) {
 
 test('[finder] itemSelected', function test(t) {
   var cfg = {
+    childKey: 'children',
+    labelKey: 'label',
     className: {
       item: 'fjs-item',
       list: 'fjs-list',
