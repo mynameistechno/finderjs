@@ -101,15 +101,21 @@ test('[finder] createItem', function test(t) {
   var item = finder.createItem(cfg, opts);
 
   t.equal(item.tagName, 'LI', 'should return a list item');
-  t.ok(
-    item.className.indexOf('fjs-item') !== -1,
-    'should have the right className');
+  t.ok(item.className.includes('fjs-item'), 'should have the right className');
   t.ok(item.childNodes.length, 'should have children');
 
   opts.children = [{
     label: 'B'
   }];
   item = finder.createItem(cfg, opts);
+
+  cfg.childKey = 'foo';
+  cfg.className = {
+    foo: 'bar'
+  };
+  opts.foo = 'bar';
+  item = finder.createItem(cfg, opts);
+  t.ok(item.className.includes('bar'));
 
   t.end();
 });
