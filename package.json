@@ -22,19 +22,19 @@
   },
   "homepage": "https://github.com/mynameistechno/finderjs#readme",
   "devDependencies": {
-    "browserify": "^11.2.0",
-    "codeclimate-test-reporter": "^0.1.1",
-    "eslint": "^1.6.0",
-    "glob": "^5.0.15",
-    "istanbul": "^0.3.21",
+    "browserify": "^14.4.0",
+    "codeclimate-test-reporter": "^0.5.0",
+    "eslint": "^4.8.0",
+    "glob": "^7.1.2",
+    "istanbul": "^0.4.5",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.1",
-    "uglifyify": "^3.0.1",
+    "uglifyify": "^4.0.4",
     "watchify": "^3.4.0",
     "xhr": "^2.1.0"
   },
   "dependencies": {
-    "eventemitter3": "^1.1.1",
+    "eventemitter3": "^2.0.3",
     "global": "^4.3.0",
     "x-is-array": "^0.1.0",
     "xtend": "^4.0.0"
