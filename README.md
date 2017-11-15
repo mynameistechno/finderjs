@@ -11,6 +11,12 @@ Demo:
 
 [http://mynameistechno.github.io/finderjs/](http://mynameistechno.github.io/finderjs/)
 
+### React
+
+The engineering team at AndcultureCode has written a React wrapper for finderjs! Check it out:
+
+[https://github.com/AndcultureCode/react-finderjs](https://github.com/AndcultureCode/react-finderjs)
+
 ## Installation
 
 ```bash
