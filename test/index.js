@@ -150,9 +150,10 @@ test('[finder] itemSelected', function test(t) {
     col: col
   };
 
-  // test plan is to verify the column-created event is emitted
-  t.plan(3);
-  emitter.on('create-column', t.ok.bind(null, true, 'Column is created'));
+  // test plan is to verify the correct events are emitted
+  t.plan(4);
+  emitter.on('create-column', t.ok.bind(null, true, 'column is created'));
+  emitter.on('interior-selected', t.ok.bind(null, true, 'interior selected'));
   finder.itemSelected(cfg, emitter, value);
 
   // item.children not provided, uses item.url

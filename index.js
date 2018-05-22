@@ -100,6 +100,7 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
 
   if (data) {
     finder.createColumn(data, cfg, emitter, item);
+    emitter.emit('interior-selected', item);
   } else if (item.url) {
     document.location.href = item.url;
   } else {
