@@ -6,6 +6,7 @@
 
 var extend = require('xtend');
 var document = require('global/document');
+var window = require('global/window');
 var EventEmitter = require('eventemitter3');
 var isArray = require('x-is-array');
 
@@ -52,7 +53,7 @@ function finder(container, data, options) {
 
   // dom events
   container.addEventListener(
-    'click', finder.clickEvent.bind(null, cfg, emitter));
+    'click', finder.clickEvent.bind(null, container, cfg, emitter));
   container.addEventListener(
     'keydown', finder.keydownEvent.bind(null, container, cfg, emitter));
 
@@ -91,12 +92,19 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
   var col = value.col;
   var data = item[cfg.childKey] || cfg.data;
   var activeEls = col.getElementsByClassName(cfg.className.active);
+  var x = window.pageXOffset;
+  var y = window.pageYOffset;
 
   if (activeEls.length) {
     _.removeClass(activeEls[0], cfg.className.active);
   }
   _.addClass(itemEl, cfg.className.active);
   _.nextSiblings(col).map(_.remove);
+
+  // fix for #14: we need to keep the focus on a live DOM element, such as the
+  // container, in order for keydown events to get fired
+  value.container.focus();
+  window.scrollTo(x, y);
 
   if (data) {
     finder.createColumn(data, cfg, emitter, item);
@@ -109,11 +117,12 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
 
 /**
  * Click event handler for whole container
+ * @param  {element} container
  * @param  {object} config
  * @param  {object} event emitter
  * @param  {object} event
  */
-finder.clickEvent = function clickEvent(cfg, emitter, event) {
+finder.clickEvent = function clickEvent(container, cfg, emitter, event) {
   var el = event.target;
   var col = _.closest(el, function test(el) {
     return _.hasClass(el, cfg.className.col);
@@ -127,6 +136,7 @@ finder.clickEvent = function clickEvent(cfg, emitter, event) {
   // list item clicked
   if (item) {
     emitter.emit('item-selected', {
+      container: container,
       col: col,
       item: item
     });
@@ -194,6 +204,7 @@ finder.navigate = function navigate(cfg, emitter, value) {
 
   if (target) {
     emitter.emit('item-selected', {
+      container: value.container,
       col: col,
       item: target
     });
