@@ -2,6 +2,7 @@
 
 var test = require('tape');
 var document = require('global/document');
+var window = require('global/window');
 var EventEmitter = require('eventemitter3');
 
 var finder = require('../index');
@@ -9,6 +10,12 @@ var finder = require('../index');
 
 // for setting document.location.href
 document.location = {};
+
+// for scrolling the window
+window.pageXOffset = 0;
+window.pageYOffset = 0;
+window.scrollTo = function (x, y) { }; // eslint-disable-line
+
 
 test('[finder] finder', function test(t) {
   var children = [{
@@ -135,6 +142,7 @@ test('[finder] itemSelected', function test(t) {
   };
   var emitter = new EventEmitter();
   var col = document.createElement('div');
+  var container = document.createElement('div');
   var value = {
     item: {
       _item: {
@@ -147,7 +155,8 @@ test('[finder] itemSelected', function test(t) {
         }]
       }
     },
-    col: col
+    col: col,
+    container: container
   };
 
   // test plan is to verify the column-created event is emitted
@@ -184,6 +193,7 @@ test('[finder] clickEvent', function test(t) {
   var emitter = new EventEmitter();
   var item = document.createElement('li');
   var col = document.createElement('div');
+  var container = document.createElement('div');
   var event;
 
   col.className = cfg.className.col;
@@ -196,17 +206,17 @@ test('[finder] clickEvent', function test(t) {
   };
 
   t.plan(2);
-  finder.clickEvent(cfg, emitter, event);
+  finder.clickEvent(container, cfg, emitter, event);
 
   emitter.on('item-selected', t.ok.bind(null, true, 'item clicked'));
-  finder.clickEvent(cfg, emitter, event);
+  finder.clickEvent(container, cfg, emitter, event);
 
   item.className = cfg.className.item + ' ' + cfg.className.active;
-  finder.clickEvent(cfg, emitter, event);
+  finder.clickEvent(container, cfg, emitter, event);
 
   // non-listitem clicked
   item.className = '';
-  finder.clickEvent(cfg, emitter, event);
+  finder.clickEvent(container, cfg, emitter, event);
 
   t.end();
 });
