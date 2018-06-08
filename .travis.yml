@@ -5,7 +5,7 @@ env:
 language: node_js
 
 node_js:
-  - 8.2.1
+  - 8.11.2
 dist: trusty
 before_script:
   - yarn global add nyc
