@@ -17,7 +17,7 @@ test:
 	$(npmBin)/tape test/**/*.js | $(npmBin)/tap-spec
 
 cover:
-	$(npmBin)/istanbul cover --report html test/test.js
+	$(npmBin)/nyc --reporter=lcov  --reporter=html make test
 
 lint:
 	$(npmBin)/eslint *.js test/**
