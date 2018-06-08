@@ -109,9 +109,12 @@ Event                    | Description
 -------------------------|-------------------------
 `item-selected`          | An item was selected (clicked or keyboard arrow)
 `leaf-selected`          | A leaf node was selected
+`interior-selected`      | An interior node was selected
 `create-column `         | Append a column to the container
 `column-created`         | A column was appended to the container
 `navigate`               | Navigate the finder by going `up`, `down`, `right`, or `left`
+
+Note that for historical reasons, `leaf-selected` and `interior-selected` receive the node object from the data model, while `item-selected` receives the DOM elements for the column and item selected.
 
 See the examples for more [details](example).
 
@@ -126,6 +129,7 @@ Option | Type |Description
 
 Command       | Description
 --------------|-------------------------------------
+`npm install` | Install dependencies into `node_modules/`
 `make build`  | Build finderjs and example
 `make install`| Clears node_modules and installs
 `make clean`  | Remove build and coverage data
@@ -133,4 +137,3 @@ Command       | Description
 `make test`   | Run tests
 `make cover`  | Run coverage tests
 `make watch in=<file> out=<file>` | Watchify a file
-
