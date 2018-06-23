@@ -123,6 +123,8 @@ See the examples for more [details](example).
 Option | Type |Description
 -------|------|-----------
 `className`| Object | Override the [default classnames](https://github.com/mynameistechno/finderjs/blob/master/index.js#L14) by populating this object
+`labelKey`| string | Override the data key used to render labels. Defaults to `label`.
+`childKey`| string | Override the data key used to populate children. Defaults to `children`.
 `createItemContent` | Function | Define how each item is rendered. The first parameter passed in is the `config` object and the second is the `item` object that is currently being iterated on. It should return an HTML Element.
 
 ## Project commands
