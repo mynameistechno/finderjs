@@ -308,7 +308,7 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent, selected
  */
 finder.createList = function createList(data, cfg, selectedIndex) {
   var ul = _.el('ul');
-  var items = data.map((item, index) => finder.createItem(cfg, selectedIndex === index, item));
+  var items = data.map((item, index) => finder.createItem(cfg, item, selectedIndex === index));
   var docFrag;
 
   docFrag = items.reduce(function each(docFrag, curr) {
@@ -347,7 +347,7 @@ finder.createItemContent = function createItemContent(cfg, item) {
  * @param  {object} item data
  * @return {element} list item
  */
-finder.createItem = function createItem(cfg, isSelectedItem, item) {
+finder.createItem = function createItem(cfg, item, isSelectedItem) {
   var frag = document.createDocumentFragment();
   var liClassNames = [cfg.className.item];
   var li = _.el('li');
