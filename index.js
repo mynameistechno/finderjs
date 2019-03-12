@@ -67,7 +67,7 @@ function finder(container, data, options) {
   _.addClass(container, cfg.className.container);
 
   // checking if option has preselect path
-  if (options.preSelectPath) {
+  if (options && options.preSelectPath) {
     finder.preSelect(options.preSelectPath, cfg, emitter, data);
   } else {
     finder.createColumn(data, cfg, emitter);
