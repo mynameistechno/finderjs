@@ -65,7 +65,14 @@ function finder(container, data, options) {
     'navigate', finder.navigate.bind(null, cfg, emitter));
 
   _.addClass(container, cfg.className.container);
-  finder.createColumn(data, cfg, emitter);
+
+  // checking if option has preselect path
+  if (options.preSelectPath) {
+    finder.preSelect(options.preSelectPath, cfg, emitter, data);
+  } else {
+    finder.createColumn(data, cfg, emitter);
+  }
+
   container.setAttribute('tabindex', 0);
 
   return emitter;
@@ -167,7 +174,35 @@ finder.keydownEvent = function keydownEvent(container, cfg, emitter, event) {
     });
   }
 };
+/**
+ * Function to handle preselected path from option.
+ * This is an recurive function which passes data of child 
+ * to itself for rendering column.
+ * @param {string} path preselected path which are attched with forward slash(/)
+ * @param {object} cfg
+ * @param {object} emitter
+ * @param {object} data
+ */
+finder.preSelect = function(path, cfg, emitter, data) {
+  let pathList = path.split('/').filter(p=>p);
 
+  if(pathList.length < 1) return;
+
+  pathList = pathList.map(p => p.trim())
+  let childLables = data.map(child => child.label.toLowerCase())
+  let selectedItemIndex = childLables.indexOf(pathList[0].toLowerCase())
+  let childData = data.find(function(d){return d.label.toLowerCase() === pathList[0].toLowerCase()})
+  if (data && data.length > 0) {  
+    finder.createColumn(data, cfg, emitter, null, selectedItemIndex)
+    if(pathList.length > 0 && childData){
+      pathList.shift()
+      path = pathList.join('/')
+      finder.preSelect(path, cfg, emitter, childData[cfg.childKey])
+    }    
+  } else {
+    return
+  }
+}
 /**
  * Navigate the finder up, down, right, or left
  * @param  {object} config
@@ -245,17 +280,17 @@ finder.findLastActive = function findLastActive(container, cfg) {
  * @param  {parent} [parent] - parent item that clicked/triggered createColumn
  * @return {element} column
  */
-finder.createColumn = function createColumn(data, cfg, emitter, parent) {
+finder.createColumn = function createColumn(data, cfg, emitter, parent, selectedItemIndex) {
   var div;
   var list;
   function callback(data) {
-    finder.createColumn(data, cfg, emitter, parent);
+    finder.createColumn(data, cfg, emitter, parent, selectedItemIndex);
   };
 
   if (typeof data === 'function') {
     data.call(null, parent, cfg, callback);
   } else if (isArray(data)) {
-    list = finder.createList(data, cfg);
+    list = finder.createList(data, cfg, selectedItemIndex);
     div = _.el('div');
     div.appendChild(list);
     _.addClass(div, cfg.className.col);
@@ -271,9 +306,9 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent) {
  * @param  {object} config
  * @return {element} list
  */
-finder.createList = function createList(data, cfg) {
+finder.createList = function createList(data, cfg, selectedIndex) {
   var ul = _.el('ul');
-  var items = data.map(finder.createItem.bind(null, cfg));
+  var items = data.map((item, index) => finder.createItem(cfg, selectedIndex === index, item));
   var docFrag;
 
   docFrag = items.reduce(function each(docFrag, curr) {
@@ -312,7 +347,7 @@ finder.createItemContent = function createItemContent(cfg, item) {
  * @param  {object} item data
  * @return {element} list item
  */
-finder.createItem = function createItem(cfg, item) {
+finder.createItem = function createItem(cfg, isSelectedItem, item) {
   var frag = document.createDocumentFragment();
   var liClassNames = [cfg.className.item];
   var li = _.el('li');
@@ -324,6 +359,9 @@ finder.createItem = function createItem(cfg, item) {
 
   a.href = '';
   a.setAttribute('tabindex', -1);
+  if (isSelectedItem){
+    liClassNames.push(cfg.className.active)
+  }
   if (item.url) {
     a.href = item.url;
     liClassNames.push(cfg.className.url);
