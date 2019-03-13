@@ -38,10 +38,14 @@ module.exports = finder;
  */
 function finder(container, data, options) {
   var emitter = new EventEmitter();
-  var cfg = extend(defaults, {
-    container: container,
-    emitter: emitter
-  }, options);
+  var cfg = extend(
+    defaults,
+    {
+      container: container,
+      emitter: emitter
+    },
+    options
+  );
 
   // xtend doesn't deep merge
   cfg.className = extend(defaults.className, options ? options.className : {});
@@ -53,16 +57,21 @@ function finder(container, data, options) {
 
   // dom events
   container.addEventListener(
-    'click', finder.clickEvent.bind(null, container, cfg, emitter));
+    'click',
+    finder.clickEvent.bind(null, container, cfg, emitter)
+  );
   container.addEventListener(
-    'keydown', finder.keydownEvent.bind(null, container, cfg, emitter));
+    'keydown',
+    finder.keydownEvent.bind(null, container, cfg, emitter)
+  );
 
   // internal events
   emitter.on('item-selected', finder.itemSelected.bind(null, cfg, emitter));
   emitter.on(
-    'create-column', finder.addColumn.bind(null, container, cfg, emitter));
-  emitter.on(
-    'navigate', finder.navigate.bind(null, cfg, emitter));
+    'create-column',
+    finder.addColumn.bind(null, container, cfg, emitter)
+  );
+  emitter.on('navigate', finder.navigate.bind(null, cfg, emitter));
 
   _.addClass(container, cfg.className.container);
   finder.createColumn(data, cfg, emitter);
@@ -195,7 +204,8 @@ finder.navigate = function navigate(cfg, emitter, value) {
       target = _.first(col, '.' + cfg.className.item);
     } else if (dir === 'left' && col.previousSibling) {
       col = col.previousSibling;
-      target = _.first(col, '.' + cfg.className.active) ||
+      target =
+        _.first(col, '.' + cfg.className.active) ||
         _.first(col, '.' + cfg.className.item);
     }
   } else {
@@ -250,7 +260,7 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent) {
   var list;
   function callback(data) {
     finder.createColumn(data, cfg, emitter, parent);
-  };
+  }
 
   if (typeof data === 'function') {
     data.call(null, parent, cfg, callback);
