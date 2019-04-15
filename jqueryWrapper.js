@@ -5,7 +5,7 @@
  * @author Mark Matyas
  */
 
-;(function jQuery($) {
+(function jQuery($) {
   var name = 'finderjs';
 
   $.fn[name] = function _finderjs(data, options) {

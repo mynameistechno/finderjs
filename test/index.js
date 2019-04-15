@@ -7,87 +7,102 @@ var EventEmitter = require('eventemitter3');
 
 var finder = require('../index');
 
-
 // for setting document.location.href
 document.location = {};
 
 // for scrolling the window
 window.pageXOffset = 0;
 window.pageYOffset = 0;
-window.scrollTo = function (x, y) { }; // eslint-disable-line
-
+window.scrollTo = function(x, y) {}; // eslint-disable-line
 
 test('[finder] finder', function test(t) {
-  var children = [{
-    label: 'A: Choice 1'
-  }, {
-    label: 'B: Choice 1'
-  }];
+  var children = [
+    {
+      label: 'A: Choice 1'
+    },
+    {
+      label: 'B: Choice 1'
+    }
+  ];
   var container = document.createElement('div');
 
   function source(parent, config, callback) {
     callback([]);
   }
 
-  t.ok(finder(container, children), 'doesn\'t throw an exception');
+  t.ok(finder(container, children), "doesn't throw an exception");
   t.ok(container.childNodes.length, 'should have children');
   t.throws(
     finder.bind(null, container, 123),
-    'throws an exception - non-array children');
+    'throws an exception - non-array children'
+  );
 
   t.ok(finder(container, children, {}), 'with options');
 
   t.ok(finder(container, source), 'with function as data source');
 
+  t.ok(finder(container, children, {defaultPath: []}), 'with default path');
+
   t.end();
 });
 
 test('[finder] createColumn', function test(t) {
-  var children = [{
-    label: 'A: Choice 1'
-  }, {
-    label: 'B: Choice 1'
-  }];
+  var children = [
+    {
+      label: 'A: Choice 1'
+    },
+    {
+      label: 'B: Choice 1'
+    }
+  ];
+  var emitter = new EventEmitter();
   var cfg = {
     className: {
       col: 'fjs-col',
       item: 'fjs-item',
       list: 'fjs-list'
-    }
+    },
+    emitter: emitter
   };
-  var emitter = new EventEmitter();
 
   emitter.on('create-column', function listener(col) {
     t.equal(col.tagName, 'DIV', 'should return a div');
     t.ok(
       col.className.indexOf('fjs-col') !== -1,
-      'should have the right className');
+      'should have the right className'
+    );
     t.ok(col.childNodes.length, 'should have children');
   });
-  finder.createColumn(children, cfg, emitter);
+  finder.createColumn(children, cfg);
 
   t.plan(3);
   t.end();
 });
 
 test('[finder] createList', function test(t) {
-  var children = [{
-    label: 'A: Choice 1'
-  }, {
-    label: 'B: Choice 1'
-  }];
+  var children = [
+    {
+      label: 'A: Choice 1'
+    },
+    {
+      label: 'B: Choice 1'
+    }
+  ];
+  var emitter = new EventEmitter();
   var cfg = {
     className: {
       list: 'fjs-list',
       item: 'fjs-item'
-    }
+    },
+    emitter: emitter
   };
   var col = finder.createList(children, cfg);
 
   t.equal(col.tagName, 'UL', 'should return an unordered list');
   t.ok(
     col.className.indexOf('fjs-list') !== -1,
-    'should have the right className');
+    'should have the right className'
+  );
   t.ok(col.childNodes.length, 'should have children');
 
   t.end();
@@ -109,13 +124,16 @@ test('[finder] createItem', function test(t) {
 
   t.equal(item.tagName, 'LI', 'should return a list item');
   t.ok(
-    item.className.indexOf('fjs-item') !== -1 ,
-    'should have the right className');
+    item.className.indexOf('fjs-item') !== -1,
+    'should have the right className'
+  );
   t.ok(item.childNodes.length, 'should have children');
 
-  opts.children = [{
-    label: 'B'
-  }];
+  opts.children = [
+    {
+      label: 'B'
+    }
+  ];
   item = finder.createItem(cfg, opts);
 
   cfg.childKey = 'foo';
@@ -130,6 +148,9 @@ test('[finder] createItem', function test(t) {
 });
 
 test('[finder] itemSelected', function test(t) {
+  var emitter = new EventEmitter();
+  var col = document.createElement('div');
+  var container = document.createElement('div');
   var cfg = {
     childKey: 'children',
     labelKey: 'label',
@@ -138,21 +159,23 @@ test('[finder] itemSelected', function test(t) {
       list: 'fjs-list',
       col: 'fjs-col',
       active: 'fjs-active'
-    }
+    },
+    container: container,
+    emitter: emitter
   };
-  var emitter = new EventEmitter();
-  var col = document.createElement('div');
-  var container = document.createElement('div');
   var value = {
     item: {
       _item: {
         label: 'B: Choice 1',
         url: 'http://test.com',
-        children: [{
-          label: 'A: Choice 1',
-        }, {
-          label: 'B: Choice 1',
-        }]
+        children: [
+          {
+            label: 'A: Choice 1'
+          },
+          {
+            label: 'B: Choice 1'
+          }
+        ]
       }
     },
     col: col,
@@ -163,38 +186,40 @@ test('[finder] itemSelected', function test(t) {
   t.plan(4);
   emitter.on('create-column', t.ok.bind(null, true, 'column is created'));
   emitter.on('interior-selected', t.ok.bind(null, true, 'interior selected'));
-  finder.itemSelected(cfg, emitter, value);
+  finder.itemSelected(cfg, value);
 
   // item.children not provided, uses item.url
   delete value.item._item.children;
-  finder.itemSelected(cfg, emitter, value);
+  finder.itemSelected(cfg, value);
 
   // no children or url, leaf-selected event emitted
   delete value.item._item.url;
   emitter.on('leaf-selected', t.ok.bind(null, true, 'leaf selected'));
-  finder.itemSelected(cfg, emitter, value);
+  finder.itemSelected(cfg, value);
 
   // active elements are removed
   col.getElementsByClassName = function gebcn() {
     return [value.item];
   };
-  finder.itemSelected(cfg, emitter, value);
+  finder.itemSelected(cfg, value);
 
   t.end();
 });
 
 test('[finder] clickEvent', function test(t) {
+  var emitter = new EventEmitter();
+  var item = document.createElement('li');
+  var col = document.createElement('div');
+  var container = document.createElement('div');
   var cfg = {
     className: {
       item: 'fjs-item',
       col: 'fjs-col',
       active: 'fjs-active'
-    }
+    },
+    container: container,
+    emitter: emitter
   };
-  var emitter = new EventEmitter();
-  var item = document.createElement('li');
-  var col = document.createElement('div');
-  var container = document.createElement('div');
   var event;
 
   col.className = cfg.className.col;
@@ -207,34 +232,35 @@ test('[finder] clickEvent', function test(t) {
   };
 
   t.plan(2);
-  finder.clickEvent(container, cfg, emitter, event);
+  finder.clickEvent(cfg, event);
 
   emitter.on('item-selected', t.ok.bind(null, true, 'item clicked'));
-  finder.clickEvent(container, cfg, emitter, event);
+  finder.clickEvent(cfg, event);
 
   item.className = cfg.className.item + ' ' + cfg.className.active;
-  finder.clickEvent(container, cfg, emitter, event);
+  finder.clickEvent(cfg, event);
 
   // non-listitem clicked
   item.className = '';
-  finder.clickEvent(container, cfg, emitter, event);
+  finder.clickEvent(cfg, event);
 
   t.end();
 });
 
 test('[finder] findLastActive', function test(t) {
+  var container = document.createElement('div');
   var cfg = {
     className: {
       item: 'fjs-item',
       list: 'fjs-list',
       col: 'fjs-col',
       active: 'fjs-active'
-    }
+    },
+    container: container
   };
-  var container = document.createElement('div');
   var col = document.createElement('div');
   var item = document.createElement('div');
-  var active = finder.findLastActive(container, cfg);
+  var active = finder.findLastActive(cfg);
 
   t.deepEqual(active, null, 'no active elements present');
 
@@ -242,7 +268,7 @@ test('[finder] findLastActive', function test(t) {
   item.className = cfg.className.active;
   col.appendChild(item);
   container.appendChild(col);
-  active = finder.findLastActive(container, cfg);
+  active = finder.findLastActive(cfg);
 
   t.deepEqual(active, {col: col, item: item}, 'active item and col located');
 
@@ -250,17 +276,19 @@ test('[finder] findLastActive', function test(t) {
 });
 
 test('[finder] navigate', function test(t) {
+  var emitter = new EventEmitter();
+  var col = document.createElement('div');
+  var container = document.createElement('div');
   var cfg = {
     className: {
       item: 'fjs-item',
       list: 'fjs-list',
       col: 'fjs-col',
       active: 'fjs-active'
-    }
+    },
+    container: container,
+    emitter: emitter
   };
-  var emitter = new EventEmitter();
-  var col = document.createElement('div');
-  var container = document.createElement('div');
   var item = document.createElement('div');
   var sibling = document.createElement('div');
   var value;
@@ -283,17 +311,17 @@ test('[finder] navigate', function test(t) {
   emitter.on('item-selected', t.ok.bind(null, true, 'item selected'));
 
   // there is an active item but no siblings, so no target is selected
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   // up arrow
   value.direction = 'up';
   item.previousSibling = sibling;
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   // down arrow
   value.direction = 'down';
   item.nextSibling = sibling;
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   // right arrow
   value.direction = 'right';
@@ -301,7 +329,7 @@ test('[finder] navigate', function test(t) {
   sibling.querySelector = function qs() {
     return item;
   };
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   // left arrow - select active
   value.direction = 'left';
@@ -309,7 +337,7 @@ test('[finder] navigate', function test(t) {
   sibling.querySelector = function qs() {
     return item;
   };
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   // left arrow - select first
   value.direction = 'left';
@@ -319,7 +347,7 @@ test('[finder] navigate', function test(t) {
     }
     return item;
   };
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   // no active items
   container.querySelector = function qs() {
@@ -329,7 +357,7 @@ test('[finder] navigate', function test(t) {
     return item;
   };
   item.className = cfg.className.item;
-  finder.navigate(cfg, emitter, value);
+  finder.navigate(cfg, value);
 
   t.end();
 });
@@ -340,14 +368,18 @@ test('[finder] keydownEvent', function test(t) {
     preventDefault: function noop() {},
     stopPropagation: function noop() {}
   };
+  var container = document.createElement('div');
+  var config = {
+    container: container,
+    emitter: emitter
+  };
 
   t.plan(1);
-  emitter.on(
-    'navigate', t.ok.bind(null, true, 'keyboard arrow pressed'));
-  finder.keydownEvent(null, null, emitter, event);
+  emitter.on('navigate', t.ok.bind(null, true, 'keyboard arrow pressed'));
+  finder.keydownEvent(config, event);
 
   event.keyCode = 38;
-  finder.keydownEvent(null, null, emitter, event);
+  finder.keydownEvent(config, event);
 
   t.end();
 });

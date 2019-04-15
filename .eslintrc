@@ -1,58 +1,8 @@
-// we only override defaults or enable turned off rules here
-// http://eslint.org/docs/rules/
-
 {
+  "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["prettier"],
   "rules": {
-    // possible errors
-    "no-extra-parens": 1,
-
-    // strict mode
-    "strict": ["error", "global"],
-
-    // best practices
-    "block-scoped-var": "error",
-    "guard-for-in": "error",
-    "no-else-return": "error",
-    "no-param-reassign": "error",
-    "no-self-compare": "error",
-    "no-throw-literal": "error",
-    "radix": "error",
-    "vars-on-top": "error",
-    "no-undefined": "error",
-    "no-unused-vars": ["error", {"vars": "all", "args": "after-used"}],
-    "no-unused-expressions": 0,
-
-    // style rules
-    "camelcase": 0,
-    "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
-    "comma-style": ["error", "last"],
-    "consistent-this": ["error", "_this"],
-    "func-names": 1,
-    "func-style": ["error", "declaration"],
-    "keyword-spacing": ["error"],
-    "no-lonely-if": 1,
-    "no-multiple-empty-lines": 1,
-    "no-nested-ternary": 1,
-    "one-var": ["error", "never"],
-    "object-curly-spacing": ["error", "never"],
-    "operator-linebreak": ["error", "after"],
-    "quote-props": ["error", "as-needed"],
-    "space-before-blocks": ["error", "always"],
-    "space-before-function-paren": ["error", {"anonymous": "always", "named": "never"}],
-    "space-in-parens": ["error", "never"],
-    "space-unary-ops": ["error", {"words": true, "nonwords": false}],
-    "spaced-comment": ["error", "always"],
-    "quotes": ["error", "single", "avoid-escape"],
-    "semi": ["error", "always"],
-    "no-trailing-spaces": 1,
-    "no-mixed-spaces-and-tabs": 1,
-    "indent": ["error", 2, {"SwitchCase": 1}],
-    "eol-last": 1,
-
-    // legacy
-    "max-depth": ["error", 3],
-    "max-len": ["error", 80, 4],
-    "max-params": ["error", 5]
+    "prettier/prettier": ["error"]
   },
   "env": {
     "node": true
