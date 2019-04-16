@@ -1,6 +1,5 @@
 'use strict';
 
-var document = require('global/document');
 var exampleStatic = require('./example-static');
 var exampleStaticSelectPath = require('./example-static-select-path');
 var exampleAsync = require('./example-async');

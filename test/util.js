@@ -1,7 +1,6 @@
 'use strict';
 
 var test = require('tape');
-var document = require('global/document');
 
 var _ = require('../util');
 
@@ -27,8 +26,6 @@ test('[util] hasClass', function test(t) {
 
 test('[util] addClass', function test(t) {
   var el = document.createElement('div');
-
-  t.plan(6);
 
   _.addClass(el, 'bananaslug123');
   t.equal(el.className, 'bananaslug123', 'should add the class');
@@ -59,18 +56,11 @@ test('[util] addClass', function test(t) {
     'should add all classes in string'
   );
 
-  el.classList = {
-    add: t.ok.bind(null, true, 'native .classList.add() called')
-  };
-  _.addClass(el, 'bananaslug999');
-
   t.end();
 });
 
 test('[util] removeClass', function test(t) {
   var el = document.createElement('div');
-
-  t.plan(9);
 
   el.className = '';
   _.removeClass(el, 'bananaslug123');
@@ -108,11 +98,6 @@ test('[util] removeClass', function test(t) {
   _.removeClass(el, 'bananaslug456 bananaslug123');
   t.equal(el.className, 'derp', 'should remove all classes in string');
 
-  el.classList = {
-    remove: t.ok.bind(null, true, 'native .classList.remove() called')
-  };
-  _.removeClass(el, 'bananaslug999');
-
   t.end();
 });
 
@@ -149,12 +134,11 @@ test('[util] nextSiblings', function test(t) {
   var prev;
   var first;
 
-  // global/document doesn't appear to support .nextSibling
   first = prev = document.createElement('div');
   parent.appendChild(prev);
   for (i = 0; i < 9; i++) {
     el = document.createElement('div');
-    prev.nextSibling = el;
+    // prev.nextSibling = el;
     parent.appendChild(el);
     prev = el;
   }
@@ -180,12 +164,11 @@ test('[util] previousSiblings', function test(t) {
   var prev;
   var first;
 
-  // global/document doesn't appear to support .previousSibling
   first = prev = document.createElement('div');
   parent.appendChild(prev);
   for (i = 0; i < 9; i++) {
     el = document.createElement('div');
-    el.previousSibling = prev;
+    // el.previousSibling = prev;
     parent.appendChild(el);
     prev = el;
   }
@@ -264,11 +247,13 @@ test('[util] append', function test(t) {
 
   // append array of items
   t.equal(_.append(parent, children), parent, 'return parent');
-  t.equal(parent.childNodes[0].childNodes.length, 3, 'appended array of 3 els');
+  var divs = parent.querySelectorAll('div');
+  t.equal(divs.length, 3, 'appended array of 3 els');
 
   parent = _.el('div');
   _.append(parent, div);
-  t.equal(parent.childNodes[0].childNodes.length, 1, 'appended 1 element');
+  divs = parent.querySelectorAll('div');
+  t.equal(divs.length, 1, 'appended 1 element');
 
   t.end();
 });
