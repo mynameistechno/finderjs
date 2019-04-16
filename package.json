@@ -1,6 +1,6 @@
 {
   "name": "finderjs",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Finder-like ui for viewing hierarchical content in columns",
   "scripts": {
     "test": "make test"
