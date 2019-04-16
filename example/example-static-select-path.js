@@ -190,8 +190,10 @@ var emitter;
 module.exports = createExample;
 
 function createExample(container) {
+  var button = document.getElementById('select-path-button');
   emitter = finder(container, data, {
-    createItemContent: createItemContent
+    createItemContent: createItemContent,
+    defaultPath: 'build/finder.js'
   });
 
   // when a leaf node selected, display the details in a new column
@@ -202,6 +204,10 @@ function createExample(container) {
   // scroll to the right if necessary when a new column is created
   emitter.on('column-created', function columnCreated() {
     container.scrollLeft = container.scrollWidth - container.clientWidth;
+  });
+
+  button.addEventListener('click', function goTo() {
+    emitter.emit('go-to', 'test/test.js');
   });
 }
 

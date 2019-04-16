@@ -56,46 +56,74 @@ function finder(container, data, options) {
   }
 
   // dom events
-  container.addEventListener(
-    'click',
-    finder.clickEvent.bind(null, container, cfg, emitter)
-  );
-  container.addEventListener(
-    'keydown',
-    finder.keydownEvent.bind(null, container, cfg, emitter)
-  );
+  container.addEventListener('click', finder.clickEvent.bind(null, cfg));
+  container.addEventListener('keydown', finder.keydownEvent.bind(null, cfg));
 
   // internal events
-  emitter.on('item-selected', finder.itemSelected.bind(null, cfg, emitter));
-  emitter.on(
-    'create-column',
-    finder.addColumn.bind(null, container, cfg, emitter)
-  );
-  emitter.on('navigate', finder.navigate.bind(null, cfg, emitter));
+  emitter.on('item-selected', finder.itemSelected.bind(null, cfg));
+  emitter.on('create-column', finder.addColumn.bind(null, cfg));
+  emitter.on('navigate', finder.navigate.bind(null, cfg));
+  emitter.on('go-to', finder.goTo.bind(null, cfg, data));
 
   _.addClass(container, cfg.className.container);
-  finder.createColumn(data, cfg, emitter);
+
+  finder.createColumn(data, cfg);
+
+  if (cfg.defaultPath) {
+    window.requestAnimationFrame(function next() {
+      finder.goTo(cfg, data, cfg.defaultPath);
+    });
+  }
+
   container.setAttribute('tabindex', 0);
 
   return emitter;
 }
 
 /**
+ * @param {string} str
+ * @return {string}
+ */
+function trim(str) {
+  return str.trim();
+}
+
+/**
+ * @param  {object} config
+ * @param {object} data
+ * @param {array|string} path
+ */
+finder.goTo = function goTo(cfg, data, goToPath) {
+  var path = isArray(goToPath)
+    ? goToPath
+    : goToPath
+        .split('/')
+        .map(trim)
+        .filter(Boolean);
+  if (path.length) {
+    while (cfg.container.firstChild) {
+      cfg.container.removeChild(cfg.container.firstChild);
+    }
+    finder.selectPath(path, cfg, data);
+  }
+};
+
+/**
  * @param {element} container
  * @param {element} column to append to container
  */
-finder.addColumn = function addColumn(container, cfg, emitter, col) {
-  container.appendChild(col);
+finder.addColumn = function addColumn(cfg, col) {
+  cfg.container.appendChild(col);
 
-  emitter.emit('column-created', col);
+  cfg.emitter.emit('column-created', col);
 };
 
 /**
  * @param  {object} config
- * @param  {object} event emitter
  * @param  {object} event value
+ * @param {object | undefined}
  */
-finder.itemSelected = function itemSelected(cfg, emitter, value) {
+finder.itemSelected = function itemSelected(cfg, value) {
   var itemEl = value.item;
   var item = itemEl._item;
   var col = value.col;
@@ -103,6 +131,7 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
   var activeEls = col.getElementsByClassName(cfg.className.active);
   var x = window.pageXOffset;
   var y = window.pageYOffset;
+  var newCol;
 
   if (activeEls.length) {
     _.removeClass(activeEls[0], cfg.className.active);
@@ -112,27 +141,27 @@ finder.itemSelected = function itemSelected(cfg, emitter, value) {
 
   // fix for #14: we need to keep the focus on a live DOM element, such as the
   // container, in order for keydown events to get fired
-  value.container.focus();
+  cfg.container.focus();
   window.scrollTo(x, y);
 
   if (data) {
-    finder.createColumn(data, cfg, emitter, item);
-    emitter.emit('interior-selected', item);
+    newCol = finder.createColumn(data, cfg, item);
+    cfg.emitter.emit('interior-selected', item);
   } else if (item.url) {
     document.location.href = item.url;
   } else {
-    emitter.emit('leaf-selected', item);
+    cfg.emitter.emit('leaf-selected', item);
   }
+  return newCol;
 };
 
 /**
  * Click event handler for whole container
  * @param  {element} container
  * @param  {object} config
- * @param  {object} event emitter
  * @param  {object} event
  */
-finder.clickEvent = function clickEvent(container, cfg, emitter, event) {
+finder.clickEvent = function clickEvent(cfg, event) {
   var el = event.target;
   var col = _.closest(el, function test(el) {
     return _.hasClass(el, cfg.className.col);
@@ -145,8 +174,7 @@ finder.clickEvent = function clickEvent(container, cfg, emitter, event) {
 
   // list item clicked
   if (item) {
-    emitter.emit('item-selected', {
-      container: container,
+    cfg.emitter.emit('item-selected', {
       col: col,
       item: item
     });
@@ -156,10 +184,9 @@ finder.clickEvent = function clickEvent(container, cfg, emitter, event) {
 /**
  * Keydown event handler for container
  * @param  {object} config
- * @param  {object} event emitter
  * @param  {object} event
  */
-finder.keydownEvent = function keydownEvent(container, cfg, emitter, event) {
+finder.keydownEvent = function keydownEvent(cfg, event) {
   var arrowCodes = {
     38: 'up',
     39: 'right',
@@ -170,22 +197,45 @@ finder.keydownEvent = function keydownEvent(container, cfg, emitter, event) {
   if (event.keyCode in arrowCodes) {
     _.stop(event);
 
-    emitter.emit('navigate', {
+    cfg.emitter.emit('navigate', {
       direction: arrowCodes[event.keyCode],
-      container: container
+      container: cfg.container
     });
   }
 };
+/**
+ * Function to handle preselected path from option.
+ * This is an recurive function which passes data of child
+ * to itself for rendering column.
+ * @param {array} path
+ * @param {object} cfg
+ * @param {object} data
+ * @param {object | undefined} column
+ */
+finder.selectPath = function selectPath(path, cfg, data, column) {
+  var currPath = path[0];
+  var childData = data.find(function find(item) {
+    return item[cfg.labelKey] === currPath;
+  });
 
+  var col = column || finder.createColumn(data, cfg);
+  var newCol = finder.itemSelected(cfg, {
+    col: col,
+    item: _.first(col, '[data-fjs-item="' + currPath + '"]')
+  });
+  path.shift();
+  if (path.length) {
+    finder.selectPath(path, cfg, childData[cfg.childKey], newCol);
+  }
+};
 /**
  * Navigate the finder up, down, right, or left
  * @param  {object} config
- * @param  {object} event emitter
  * @param  {object} event value - `container` prop contains a reference to the
  * container, and `direction` can be 'up', 'down', 'right', 'left'
  */
-finder.navigate = function navigate(cfg, emitter, value) {
-  var active = finder.findLastActive(value.container, cfg);
+finder.navigate = function navigate(cfg, value) {
+  var active = finder.findLastActive(cfg);
   var target = null;
   var dir = value.direction;
   var item;
@@ -209,13 +259,13 @@ finder.navigate = function navigate(cfg, emitter, value) {
         _.first(col, '.' + cfg.className.item);
     }
   } else {
-    col = _.first(value.container, '.' + cfg.className.col);
+    col = _.first(cfg.container, '.' + cfg.className.col);
     target = _.first(col, '.' + cfg.className.item);
   }
 
   if (target) {
-    emitter.emit('item-selected', {
-      container: value.container,
+    cfg.emitter.emit('item-selected', {
+      container: cfg.container,
       col: col,
       item: target
     });
@@ -228,8 +278,8 @@ finder.navigate = function navigate(cfg, emitter, value) {
  * @param  {Object} config
  * @return {Object}
  */
-finder.findLastActive = function findLastActive(container, cfg) {
-  var activeItems = container.getElementsByClassName(cfg.className.active);
+finder.findLastActive = function findLastActive(cfg) {
+  var activeItems = cfg.container.getElementsByClassName(cfg.className.active);
   var item;
   var col;
 
@@ -251,15 +301,13 @@ finder.findLastActive = function findLastActive(container, cfg) {
 /**
  * @param  {object} data
  * @param  {object} config
- * @param  {object} event emitter
  * @param  {parent} [parent] - parent item that clicked/triggered createColumn
- * @return {element} column
  */
-finder.createColumn = function createColumn(data, cfg, emitter, parent) {
+finder.createColumn = function createColumn(data, cfg, parent) {
   var div;
   var list;
   function callback(data) {
-    finder.createColumn(data, cfg, emitter, parent);
+    return finder.createColumn(data, cfg, parent);
   }
 
   if (typeof data === 'function') {
@@ -269,8 +317,8 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent) {
     div = _.el('div');
     div.appendChild(list);
     _.addClass(div, cfg.className.col);
-
-    emitter.emit('create-column', div);
+    cfg.emitter.emit('create-column', div);
+    return div;
   } else {
     throw new Error('Unknown data type');
   }
@@ -283,7 +331,9 @@ finder.createColumn = function createColumn(data, cfg, emitter, parent) {
  */
 finder.createList = function createList(data, cfg) {
   var ul = _.el('ul');
-  var items = data.map(finder.createItem.bind(null, cfg));
+  var items = data.map(function create(item) {
+    return finder.createItem(cfg, item);
+  });
   var docFrag;
 
   docFrag = items.reduce(function each(docFrag, curr) {
@@ -320,8 +370,8 @@ finder.createItemContent = function createItemContent(cfg, item) {
 /**
  * @param  {object} cfg config object
  * @param  {object} item data
- * @return {element} list item
  */
+
 finder.createItem = function createItem(cfg, item) {
   var frag = document.createDocumentFragment();
   var liClassNames = [cfg.className.item];
@@ -346,6 +396,7 @@ finder.createItem = function createItem(cfg, item) {
   }
   _.addClass(li, liClassNames);
   li.appendChild(a);
+  li.setAttribute('data-fjs-item', item[cfg.labelKey]);
   li._item = item;
 
   return li;

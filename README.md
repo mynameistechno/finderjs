@@ -28,15 +28,16 @@ npm install finderjs
 Use it as a CommonJS module, as a standalone script, or as a jQuery plugin. Roll your own CSS or feel free to use the styling in `example/finderjs.css`, which leverages flexbox.
 
 In its simpelst form:
+
 ```javascript
 var f = finder(container, data, options);
 ```
 
-Parameter | Type | Description
-----------|------|------------
-container | Element| Container element for finder
-[data](#source-is-an-array)| Array&#124;Function | Data source can be an array or function
-[options](#options)| Object | Configure classNames, item rendering, etc
+| Parameter                   | Type                | Description                               |
+| --------------------------- | ------------------- | ----------------------------------------- |
+| container                   | Element             | Container element for finder              |
+| [data](#source-is-an-array) | Array&#124;Function | Data source can be an array or function   |
+| [options](#options)         | Object              | Configure classNames, item rendering, etc |
 
 ### Data
 
@@ -48,17 +49,24 @@ Each item in the array itself should be an object. When the data source is an ar
 
 ```javascript
 var container = document.getElementById('container');
-var data = [{
-  label: 'Item 1',
-  children: [{
-    label: 'Item 1A',
-    children: [{
-      label: 'Item 1A1'
-    }]
-  }, {
-    label: 'Item 1B'
-  }]
-}];
+var data = [
+  {
+    label: 'Item 1',
+    children: [
+      {
+        label: 'Item 1A',
+        children: [
+          {
+            label: 'Item 1A1'
+          }
+        ]
+      },
+      {
+        label: 'Item 1B'
+      }
+    ]
+  }
+];
 var options = {};
 
 var f = finder(container, data, options);
@@ -105,14 +113,15 @@ If an object has a `url` property it will be treated slightly differently: the a
 
 `finder` will return an EventEmitter which allows you to listen to (and emit) the following events:
 
-Event                    | Description
--------------------------|-------------------------
-`item-selected`          | An item was selected (clicked or keyboard arrow)
-`leaf-selected`          | A leaf node was selected
-`interior-selected`      | An interior node was selected
-`create-column `         | Append a column to the container
-`column-created`         | A column was appended to the container
-`navigate`               | Navigate the finder by going `up`, `down`, `right`, or `left`
+| Event               | Description                                                                                                           |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `item-selected`     | An item was selected (clicked or keyboard arrow)                                                                      |
+| `leaf-selected`     | A leaf node was selected                                                                                              |
+| `interior-selected` | An interior node was selected                                                                                         |
+| `create-column`     | Append a column to the container                                                                                      |
+| `column-created`    | A column was appended to the container                                                                                |
+| `navigate`          | Navigate the finder by going `up`, `down`, `right`, or `left`                                                         |
+| `go-to`             | Specify a path to programmatically "go to". Accepts a string or array, e.g. `path/file.txt` or `['path', 'file.txt']` |
 
 Note that for historical reasons, `leaf-selected` and `interior-selected` receive the node object from the data model, while `item-selected` receives the DOM elements for the column and item selected.
 
@@ -120,22 +129,23 @@ See the examples for more [details](example).
 
 ### Options
 
-Option | Type |Description
--------|------|-----------
-`className`| Object | Override the [default classnames](https://github.com/mynameistechno/finderjs/blob/master/index.js#L14) by populating this object
-`labelKey`| string | Override the data key used to render labels. Defaults to `label`.
-`childKey`| string | Override the data key used to populate children. Defaults to `children`.
-`createItemContent` | Function | Define how each item is rendered. The first parameter passed in is the `config` object and the second is the `item` object that is currently being iterated on. It should return an HTML Element.
+| Option              | Type            | Description                                                                                                                                                                                       |
+| ------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `className`         | Object          | Override the [default classnames](https://github.com/mynameistechno/finderjs/blob/master/index.js#L14) by populating this object                                                                  |
+| `labelKey`          | string          | Override the data key used to render labels. Defaults to `label`.                                                                                                                                 |
+| `childKey`          | string          | Override the data key used to populate children. Defaults to `children`.                                                                                                                          |
+| `createItemContent` | Function        | Define how each item is rendered. The first parameter passed in is the `config` object and the second is the `item` object that is currently being iterated on. It should return an HTML Element. |
+| `defaultPath`       | string or array | Specify path to preselect on load. E.g. `path/file.txt` or `['path', 'file.txt']`.                                                                                                                |
 
 ## Project commands
 
-Command       | Description
---------------|-------------------------------------
-`npm install` | Install dependencies into `node_modules/`
-`make build`  | Build finderjs and example
-`make install`| Clears node_modules and installs
-`make clean`  | Remove build and coverage data
-`make lint`   | Lint files
-`make test`   | Run tests
-`make cover`  | Run coverage tests
-`make watch in=<file> out=<file>` | Watchify a file
+| Command                           | Description                               |
+| --------------------------------- | ----------------------------------------- |
+| `npm install`                     | Install dependencies into `node_modules/` |
+| `make build`                      | Build finderjs and example                |
+| `make install`                    | Clears node_modules and installs          |
+| `make clean`                      | Remove build and coverage data            |
+| `make lint`                       | Lint files                                |
+| `make test`                       | Run tests                                 |
+| `make cover`                      | Run coverage tests                        |
+| `make watch in=<file> out=<file>` | Watchify a file                           |

@@ -20,7 +20,7 @@ cover:
 	$(npmBin)/nyc --reporter=lcov  --reporter=html make test
 
 lint:
-	$(npmBin)/eslint *.js test/**
+	$(npmBin)/eslint index.js util.js test/**
 
 watch:
 	$(npmBin)/watchify $(in) -d -v -o $(out)
@@ -31,6 +31,7 @@ build-finderjs: clean
 	$(npmBin)/browserify --no-builtins example/index.js -o example/bundle.js
 	mkdir $(build)
 	$(npmBin)/browserify --full-paths --no-builtins --s finder -g uglifyify index.js -o $(build)/finder.min.js
+	echo "/*\n`cat LICENSE`\n*/\n`cat $(build)/finder.min.js`" > $(build)/finder.min.js
 
 build-jquery: build-finderjs
 	echo "/* " > $(jqueryFinder)

@@ -14,6 +14,7 @@ var isArray = require('x-is-array');
  */
 function isElement(element) {
   try {
+    // eslint-disable-next-line no-undef
     return element instanceof Element;
   } catch (error) {
     return !!(element && element.nodeType === 1);
@@ -216,15 +217,15 @@ function stop(event) {
  * Returns first element in parent that matches selector
  * @param  {Element} parent
  * @param  {String} selector
- * @return {Element}
+ * @return {Element | null}
  */
 function first(parent, selector) {
   return parent.querySelector(selector);
 }
 
-function append(parent, children) {
+function append(parent, _children) {
   var _frag = frag();
-  var children = isArray(children) ? children : [children];
+  var children = isArray(_children) ? _children : [_children];
 
   children.forEach(_frag.appendChild.bind(_frag));
   parent.appendChild(_frag);

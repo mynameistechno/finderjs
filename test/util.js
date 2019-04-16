@@ -5,7 +5,6 @@ var document = require('global/document');
 
 var _ = require('../util');
 
-
 test('[util] hasClass', function test(t) {
   var el = document.createElement('div');
   el.className = 'bananaslug123 bananaslug456 bananaslug789';
@@ -15,11 +14,13 @@ test('[util] hasClass', function test(t) {
 
   t.doesNotThrow(
     _.hasClass.bind(null, {}, 'bananaslug'),
-    'should not throw an exception when className falsey');
+    'should not throw an exception when className falsey'
+  );
 
   t.doesNotThrow(
     _.hasClass.bind(null, null, 'bananaslug'),
-    'should not throw an exception when null');
+    'should not throw an exception when null'
+  );
 
   t.end();
 });
@@ -37,19 +38,26 @@ test('[util] addClass', function test(t) {
 
   _.addClass(el, 'bananaslug456');
   t.equal(
-    el.className, 'bananaslug123 bananaslug456', 'should add second class');
+    el.className,
+    'bananaslug123 bananaslug456',
+    'should add second class'
+  );
 
   el.className = '';
   _.addClass(el, ['bananaslug456', 'bananaslug123']);
   t.equal(
-    el.className, 'bananaslug456 bananaslug123', 'should add array of classes');
+    el.className,
+    'bananaslug456 bananaslug123',
+    'should add array of classes'
+  );
 
   el.className = 'derp';
   _.addClass(el, 'bananaslug456 bananaslug123');
   t.equal(
     el.className,
     'derp bananaslug456 bananaslug123',
-    'should add all classes in string');
+    'should add all classes in string'
+  );
 
   el.classList = {
     add: t.ok.bind(null, true, 'native .classList.add() called')
@@ -74,20 +82,19 @@ test('[util] removeClass', function test(t) {
 
   el.className = 'bananaslug123 bananaslug456';
   _.removeClass(el, 'bananaslug123');
-  t.equal(
-    el.className, 'bananaslug456', 'should remove class at start');
+  t.equal(el.className, 'bananaslug456', 'should remove class at start');
 
   el.className = 'bananaslug123 bananaslug456';
   _.removeClass(el, 'bananaslug456');
-  t.equal(
-    el.className, 'bananaslug123', 'should remove class at end');
+  t.equal(el.className, 'bananaslug123', 'should remove class at end');
 
   el.className = 'bananaslug123 bananaslug456 bananaslug789';
   _.removeClass(el, 'bananaslug456');
   t.equal(
     el.className,
     'bananaslug123 bananaslug789',
-    'should remove class in middle');
+    'should remove class in middle'
+  );
 
   el.className = 'bananaslug123 bananaslug123';
   _.removeClass(el, 'bananaslug123');
@@ -120,12 +127,16 @@ test('[util] closest', function test(t) {
   t.ok(
     _.closest(child, function test(el) {
       return el.className === className;
-    }), 'element should be found');
+    }),
+    'element should be found'
+  );
 
   t.notOk(
     _.closest(child, function test(el) {
       return el.className === className + '123';
-    }), 'element should not be found');
+    }),
+    'element should not be found'
+  );
 
   t.end();
 });
@@ -150,7 +161,10 @@ test('[util] nextSiblings', function test(t) {
 
   siblings = _.nextSiblings(first);
   t.equal(
-    siblings.length, 9, 'number of siblings should equal one less than total');
+    siblings.length,
+    9,
+    'number of siblings should equal one less than total'
+  );
 
   siblings = _.nextSiblings(prev);
   t.equal(siblings.length, 0, 'number of next siblings should be 0');
@@ -246,16 +260,11 @@ test('[util] stop', function test(t) {
 test('[util] append', function test(t) {
   var parent = _.el('div');
   var div = _.el('div');
-  var children = [
-    _.el('div'),
-    _.el('div'),
-    _.el('div')
-  ];
+  var children = [_.el('div'), _.el('div'), _.el('div')];
 
   // append array of items
   t.equal(_.append(parent, children), parent, 'return parent');
-  t.equal(
-    parent.childNodes[0].childNodes.length, 3, 'appended array of 3 els');
+  t.equal(parent.childNodes[0].childNodes.length, 3, 'appended array of 3 els');
 
   parent = _.el('div');
   _.append(parent, div);
