@@ -56,6 +56,9 @@ test('[util] addClass', function test(t) {
     'should add all classes in string'
   );
 
+  var fakeElement = {className: 'foo'};
+  t.equal(_.addClass(fakeElement, 'bar').className, 'foo bar');
+
   t.end();
 });
 
@@ -215,16 +218,18 @@ test('[util] remove', function test(t) {
   var element = document.createElement('div');
   parent.appendChild(element);
 
-  t.plan(3);
   t.ok(parent.childNodes.length, 'should have children');
   _.remove(element);
   t.notOk(parent.childNodes.length, 'should not have children');
 
-  // native Element.remove()
-  element = {
-    remove: t.ok.bind(null, true, 'native remove should have been called')
+  var fakeElement = {
+    parentNode: {
+      removeChild: function removeChild() {
+        t.pass('el.remove() not supported, parentNode.removeChild(el) used');
+      }
+    }
   };
-  _.remove(element);
+  _.remove(fakeElement);
 
   t.end();
 });
