@@ -1,19 +1,19 @@
 'use strict';
 
-var test = require('tape');
-var document = require('global/document');
-var window = require('global/window');
+var tape = require('tape');
 var EventEmitter = require('eventemitter3');
-
 var finder = require('../index');
+var beforeEach = require('./test').beforeEach;
 
-// for setting document.location.href
-document.location = {};
+var test = beforeEach(tape, function before(assert) {
+  // called before each thing
+  while (document.body.firstChild) {
+    document.body.removeChild(document.body.firstChild);
+  }
 
-// for scrolling the window
-window.pageXOffset = 0;
-window.pageYOffset = 0;
-window.scrollTo = function(x, y) {}; // eslint-disable-line
+  // when done call
+  assert.end();
+});
 
 test('[finder] finder', function test(t) {
   var children = [
@@ -276,88 +276,66 @@ test('[finder] findLastActive', function test(t) {
 });
 
 test('[finder] navigate', function test(t) {
-  var emitter = new EventEmitter();
-  var col = document.createElement('div');
-  var container = document.createElement('div');
-  var cfg = {
-    className: {
-      item: 'fjs-item',
-      list: 'fjs-list',
-      col: 'fjs-col',
-      active: 'fjs-active'
-    },
-    container: container,
-    emitter: emitter
-  };
-  var item = document.createElement('div');
-  var sibling = document.createElement('div');
-  var value;
-
-  col.className = cfg.className.col;
-  item.className = cfg.className.active;
-  col.appendChild(item);
-  container.appendChild(col);
-
-  value = {
-    item: {
-      _item: {}
-    },
-    col: col,
-    container: container
-  };
-
-  // test plan is to verify an item is selected for each case
-  t.plan(6);
-  emitter.on('item-selected', t.ok.bind(null, true, 'item selected'));
-
-  // there is an active item but no siblings, so no target is selected
-  finder.navigate(cfg, value);
-
-  // up arrow
-  value.direction = 'up';
-  item.previousSibling = sibling;
-  finder.navigate(cfg, value);
-
-  // down arrow
-  value.direction = 'down';
-  item.nextSibling = sibling;
-  finder.navigate(cfg, value);
-
-  // right arrow
-  value.direction = 'right';
-  col.nextSibling = sibling;
-  sibling.querySelector = function qs() {
-    return item;
-  };
-  finder.navigate(cfg, value);
-
-  // left arrow - select active
-  value.direction = 'left';
-  col.previousSibling = sibling;
-  sibling.querySelector = function qs() {
-    return item;
-  };
-  finder.navigate(cfg, value);
-
-  // left arrow - select first
-  value.direction = 'left';
-  sibling.querySelector = function qs(sel) {
-    if (sel === '.' + cfg.className.active) {
-      return false;
+  var data = [
+    {
+      label: 'a',
+      children: [
+        {
+          label: 'b1',
+          children: [
+            {
+              label: 'c2'
+            }
+          ]
+        },
+        {
+          label: 'b2'
+        }
+      ]
     }
-    return item;
-  };
-  finder.navigate(cfg, value);
+  ];
+  var container = document.createElement('div');
+  document.body.appendChild(container);
+  finder(container, data);
 
-  // no active items
-  container.querySelector = function qs() {
-    return col;
-  };
-  col.querySelector = function qs() {
-    return item;
-  };
-  item.className = cfg.className.item;
-  finder.navigate(cfg, value);
+  // down
+  var downEvent = new window.KeyboardEvent('keydown', {
+    keyCode: 40,
+    bubbles: true
+  });
+  container.dispatchEvent(downEvent);
+  t.equal(document.querySelector('.fjs-active').textContent, 'a');
+
+  // right
+  var rightEvent = new window.KeyboardEvent('keydown', {
+    keyCode: 39,
+    bubbles: true
+  });
+  container.dispatchEvent(rightEvent);
+  var actives = document.querySelectorAll('.fjs-active');
+  t.equal(actives[1].textContent, 'b1');
+
+  // down
+  container.dispatchEvent(downEvent);
+  actives = document.querySelectorAll('.fjs-active');
+  t.equal(actives[1].textContent, 'b2');
+
+  // up
+  var upEvent = new window.KeyboardEvent('keydown', {
+    keyCode: 38,
+    bubbles: true
+  });
+  container.dispatchEvent(upEvent);
+  actives = document.querySelectorAll('.fjs-active');
+  t.equal(actives[1].textContent, 'b1');
+
+  // left
+  var leftEvent = new window.KeyboardEvent('keydown', {
+    keyCode: 37,
+    bubbles: true
+  });
+  container.dispatchEvent(leftEvent);
+  t.equal(document.querySelector('.fjs-active').textContent, 'a');
 
   t.end();
 });
@@ -380,6 +358,62 @@ test('[finder] keydownEvent', function test(t) {
 
   event.keyCode = 38;
   finder.keydownEvent(config, event);
+
+  t.end();
+});
+
+test('[finder] goTo - defaultPath - empty', function test(t) {
+  var data = [
+    {
+      label: 'a'
+    },
+    {
+      label: 'b'
+    }
+  ];
+  var container = document.createElement('div');
+  document.body.appendChild(container);
+  finder(container, data, {defaultPath: []});
+  t.notOk(document.querySelector('.fjs-active'));
+  t.end();
+});
+
+test('[finder] goTo - defaultPath', function test(t) {
+  var data = [
+    {
+      label: 'a'
+    },
+    {
+      label: 'b',
+      children: [{label: 'c'}]
+    }
+  ];
+  var container = document.createElement('div');
+  document.body.appendChild(container);
+  finder(container, data, {defaultPath: 'b/c'});
+
+  setTimeout(function() {
+    var actives = document.querySelectorAll('.fjs-active');
+    t.equal(actives[1].textContent, 'c');
+    t.end();
+  }, 0);
+});
+
+test('[finder] goTo - emit event', function test(t) {
+  var data = [
+    {
+      label: 'a'
+    },
+    {
+      label: 'b'
+    }
+  ];
+  var container = document.createElement('div');
+  document.body.appendChild(container);
+  var emitter = finder(container, data);
+  emitter.emit('go-to', 'b');
+  var active = document.querySelector('.fjs-active');
+  t.equal(active.textContent, 'b');
 
   t.end();
 });

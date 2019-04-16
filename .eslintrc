@@ -5,6 +5,7 @@
     "prettier/prettier": ["error"]
   },
   "env": {
-    "node": true
+    "node": true,
+    "browser": true
   }
 }
