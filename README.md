@@ -27,7 +27,7 @@ npm install finderjs
 
 Use it as a CommonJS module, as a standalone script, or as a jQuery plugin. Roll your own CSS or feel free to use the styling in `example/finderjs.css`, which leverages flexbox.
 
-In its simpelst form:
+In its simplest form:
 
 ```javascript
 var f = finder(container, data, options);
