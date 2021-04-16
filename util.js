@@ -4,8 +4,6 @@
  */
 'use strict';
 
-var isArray = require('x-is-array');
-
 /**
  * check if variable is an element
  * @param  {*} potential element
@@ -117,7 +115,7 @@ function addClass(element, className) {
     }
   }
 
-  if (!isArray(className)) {
+  if (!Array.isArray(className)) {
     classNames = className.trim().split(/\s+/);
   }
   classNames.forEach(_addClass.bind(null, element));
@@ -144,7 +142,7 @@ function removeClass(element, className) {
     }
   }
 
-  if (!isArray(className)) {
+  if (!Array.isArray(className)) {
     classNames = className.trim().split(/\s+/);
   }
   classNames.forEach(_removeClass.bind(null, element));
@@ -224,7 +222,7 @@ function first(parent, selector) {
 
 function append(parent, _children) {
   var _frag = frag();
-  var children = isArray(_children) ? _children : [_children];
+  var children = Array.isArray(_children) ? _children : [_children];
 
   children.forEach(_frag.appendChild.bind(_frag));
   parent.appendChild(_frag);

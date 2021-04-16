@@ -6,7 +6,6 @@
 
 var extend = require('xtend');
 var EventEmitter = require('eventemitter3');
-var isArray = require('x-is-array');
 
 var _ = require('./util');
 var defaults = {
@@ -92,7 +91,7 @@ function trim(str) {
  * @param {array|string} path
  */
 finder.goTo = function goTo(cfg, data, goToPath) {
-  var path = isArray(goToPath)
+  var path = Array.isArray(goToPath)
     ? goToPath
     : goToPath
         .split('/')
@@ -310,7 +309,7 @@ finder.createColumn = function createColumn(data, cfg, parent) {
 
   if (typeof data === 'function') {
     data.call(null, parent, cfg, callback);
-  } else if (isArray(data)) {
+  } else if (Array.isArray(data)) {
     list = finder.createList(data, cfg);
     div = _.el('div');
     div.appendChild(list);
