@@ -38,7 +38,6 @@
   },
   "dependencies": {
     "eventemitter3": "^2.0.3",
-    "x-is-array": "^0.1.0",
     "xtend": "^4.0.0"
   }
 }
