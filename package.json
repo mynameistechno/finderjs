@@ -27,7 +27,7 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "glob": "^7.1.3",
-    "jsdom": "^14.0.0",
+    "jsdom": "^16.5.0",
     "nyc": "^14.0.0",
     "prettier": "^1.17.0",
     "tap-spec": "^5.0.0",
